@@ -1,0 +1,3 @@
+include ':dashedview'
+include ':app'
+rootProject.name = "DashedViewExample"
