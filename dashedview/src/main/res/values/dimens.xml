@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="rpb_default_text_padding">8dp</dimen>
+    <dimen name="rpb_default_text_size">16sp</dimen>
+
+    <!--Default corner radius is 0. From there the user can add rounding to any desired corners-->
+    <dimen name="rpb_default_corner_radius">0dp</dimen>
+
+</resources>
