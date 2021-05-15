@@ -8,7 +8,10 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
+import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.tan
 
 class DashedView @JvmOverloads constructor(
     context: Context,
@@ -16,15 +19,16 @@ class DashedView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    // Todo change this into an open source lib. Add other abilities such as specifying the period (instead of it just being equal to view height.) Perhaps default period could be min(height, width).
-    // Todo it would be nice to integrate rounded edges/ends
+    // Todo would be nice to be able to set an outline stroke with a custom width and color
+    //todo dash offset
+    // todo space between dashes needs to use the trig calculations
 
     // Instance state
     private var dashwidth = DEFAULT_WIDTH
     private var spaceBetweenDashes = DEFAULT_SPACE_BETWEEN_DASHES
+    private var dashAngle = DEFAULT_DASH_ANGLE
     @ColorInt private var dashColor = DEFAULT_COLOR
     private var cornerRadius = DEFAULT_CORNER_RADIUS
-    private var dashAngle = DEFAULT_DASH_ANGLE
 
     private var lastWidth = width // Used for keeping track of view size
     private var lastHeight = height // Used for keeping track of view size
@@ -100,35 +104,82 @@ class DashedView @JvmOverloads constructor(
 //                }
 //            }
 
-            for ((index, floatVal) in getHorizPositions(width.toFloat(), dashwidth, spaceBetweenDashes).withIndex()) {
-
-                val startX = floatVal
-                val startY = viewBottom
-
-                val endX = (floatVal + height)
-                val endY = VIEW_TOP
+            for ((index, curCoords) in getStartPoints(width.toFloat(), dashwidth, spaceBetweenDashes, dashAngle, height.toFloat()).withIndex()) {
+                val startPoint = curCoords.startPoint
+                val endPoint = curCoords.endPoint
 
                 if (index % 2 == 0) {
-                    canvas.drawLine(startX, startY, endX, endY, dashPaint)
+                    canvas.drawLine(startPoint.first, startPoint.second, endPoint.first, endPoint.second, dashPaint)
 
                 } else {
-                    canvas.drawLine(startX, startY, endX, endY, dashPaint2)
-
-
+                    canvas.drawLine(startPoint.first, startPoint.second, endPoint.first, endPoint.second, dashPaint2)
                 }
             }
         }
     }
 
+    private fun getEndPointXTranslation(angle: Int, viewHeight: Float): Float {
+        val radians = Math.toRadians(angle.toDouble())
+        return viewHeight / tan(radians).toFloat() // todo check for divide by 0
+    }
+
     // todo write unit tests
-    private fun getHorizPositions(width: Float, dashWidth: Float, spaceBetweenDashes: Float): List<Float> {
-        val startXPositions = mutableListOf<Float>()
+    private fun getStartPoints(
+        width: Float,
+        dashWidth: Float,
+        spaceBetweenDashes: Float,
+        dashAngle: Int,
+        viewHeight: Float
+    ): List<LineCoordinates> {
+
+        // Get start points
+        val startPositions = mutableListOf<Pair<Float, Float>>()
         var curXPosition = 0f
         while (curXPosition <= width) {
-            startXPositions.add(curXPosition)
+            startPositions.add(Pair(curXPosition, viewHeight))
             curXPosition += (calculateHypotenuseLen(dashAngle, dashWidth) + (spaceBetweenDashes))
         }
-        return startXPositions
+
+        // Get endpoints and group with appropriate start points
+        val endPointXTrans = getEndPointXTranslation(dashAngle, viewHeight)
+        val z = startPositions.map {
+            LineCoordinates(
+                startPoint = it,
+                endPoint = Pair(
+                    it.first + endPointXTrans,
+                    0f // todo make it clear this is the top
+                )
+            )
+        }
+
+        // Translate start point butts
+        val hypotRadians = Math.toRadians((abs(90 - dashAngle).toDouble()))
+        val translationHypot = (dashWidth * tan((hypotRadians))) / 2
+        val xTranslation = translationHypot * sin(Math.toRadians((abs(90 - dashAngle).toDouble())))
+        val yTranslation = translationHypot * cos(Math.toRadians((abs(90 - dashAngle).toDouble())))
+        val ret = startPositions.map {
+            Pair(it.first - xTranslation.toFloat(), it.second - yTranslation.toFloat())
+        }
+        val z2 = z.map {
+            LineCoordinates(
+                Pair(
+                    it.startPoint.first + getXTransBasedOn90(xTranslation, dashAngle),
+                    it.startPoint.second + yTranslation.toFloat()
+                ),
+                Pair(
+                    it.endPoint.first,
+                    it.endPoint.second
+                )
+            )
+        }
+
+        return z2
+    }
+
+    fun getXTransBasedOn90(xTranslation: Double, angle: Int): Float {
+        val ret = if (angle > 90) xTranslation
+        else xTranslation * -1
+        return ret.toFloat()
     }
 
     // todo write unit tests
@@ -137,7 +188,7 @@ class DashedView @JvmOverloads constructor(
      * calculated using the hypotenuse.
      */
     private fun calculateHypotenuseLen(angle: Int, dashWidth: Float): Float {
-        val radians = Math.toRadians(angle.toDouble())
+        val radians = Math.toRadians((90 - angle).toDouble())
         return dashWidth / (cos(radians)).toFloat()
     }
 
