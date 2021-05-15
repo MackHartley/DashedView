@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="DashedView">
-        <attr name="density" format="integer" />
         <attr name="dashWidth" format="dimension" />
-        <attr name="cornerRadius" format="dimension" />
+        <attr name="spaceBetweenDashes" format="dimension" />
         <attr name="dashColor" format="color|reference" />
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="dashAngle" format="integer" />
     </declare-styleable>
 </resources>
