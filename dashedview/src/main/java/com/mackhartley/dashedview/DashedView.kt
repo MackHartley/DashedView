@@ -25,6 +25,7 @@ class DashedView @JvmOverloads constructor(
     // 0 degree angle needs to work
     // Todo dashes need to draw correctly when greater than 90 degrees
     //todo steps could be padded with an extra start and end step. This would avoid missing lines
+    // Todo consolidate as many math calls as possible for efficiency sake
 
     //TOdo use VIEW_TOP and other helpers whereever it makes code more readable
 
@@ -204,8 +205,8 @@ class DashedView @JvmOverloads constructor(
 
         // Calculate translation required to generate end point for a given start point
         // Apply translation to list of start points to get line coordinates for dashes
+        val endPointXTranslation = getEndPointXTranslation(dashAngle, viewHeight)
         val lineCoordinates = startPositions.map {
-            val endPointXTranslation = getEndPointXTranslation(dashAngle, it.second)
             LineCoordinates(
                 startPoint = Pair(
                     it.first,
@@ -213,13 +214,17 @@ class DashedView @JvmOverloads constructor(
                 ),
                 endPoint = Pair(
                     it.first + endPointXTranslation,
-                    VIEW_TOP
+                    it.second - viewHeight // Subtract view height because each of these lines has a different start point Y value
                 )
             )
         }
 
-        // Todo
         // Translate start and end points so all 4 corners of dash are drawn outside of the view
+        val elongatedLineCoordinates = elongateDashesOriginatingFromYAxis(
+            dashAngle,
+            dashWidth,
+            lineCoordinates
+        )
 
         return lineCoordinates
     }
@@ -250,6 +255,18 @@ class DashedView @JvmOverloads constructor(
                 )
             )
         }
+    }
+
+    /**
+     * Elongate the dashes enough so that all 4 corners of each dash are extended out of the view
+     * canvas
+     */
+    private fun elongateDashesOriginatingFromYAxis(
+        dashAngle: Int,
+        dashWidth: Float,
+        initialPositions: List<LineCoordinates>
+    ): List<LineCoordinates> {
+        return emptyList()
     }
 
     private fun getDashDirection(dashAngle: Int): DashDirection {
