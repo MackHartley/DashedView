@@ -134,21 +134,6 @@ class DashedView @JvmOverloads constructor(
         }
     }
 
-    private fun getDashDirection(dashAngle: Int): DashDirection {
-        return when {
-            dashAngle == 0 -> DashDirection.LeftToRight(true)
-            dashAngle < 90 -> DashDirection.LeftToRight(false)
-            dashAngle == 90 -> DashDirection.Vertical
-            dashAngle < 180 -> DashDirection.RightToLeft(false)
-            else -> DashDirection.RightToLeft(true)
-        }
-    }
-
-    private fun getEndPointXTranslation(angle: Int, viewHeight: Float): Float {
-        val radians = Math.toRadians(angle.toDouble())
-        return viewHeight / tan(radians).toFloat() // todo check for divide by 0
-    }
-
     // todo write unit tests
     private fun getLinesOriginatingFromXAxis(
         width: Float,
@@ -194,34 +179,6 @@ class DashedView @JvmOverloads constructor(
         return elongatedLineCoordinates
     }
 
-    /**
-     * Elongate the dashes enough so that all 4 corners of each dash are extended out of the view
-     * canvas
-     */
-    private fun elongateDashesOriginatingFromXAxis(
-        dashAngle: Int,
-        dashWidth: Float,
-        initialPositions: List<LineCoordinates>
-    ): List<LineCoordinates> {
-        val hypotRadians = Math.toRadians((abs(90 - dashAngle).toDouble()))
-        val translationHypot = (dashWidth * tan((hypotRadians))) / 2
-        val xTranslation = translationHypot * sin(Math.toRadians((abs(90 - dashAngle).toDouble())))
-        val yTranslation = translationHypot * cos(Math.toRadians((abs(90 - dashAngle).toDouble())))
-
-        return initialPositions.map {
-            LineCoordinates(
-                Pair(
-                    it.startPoint.first + getXTranslationToConcealLineCorners(xTranslation, dashAngle, false),
-                    it.startPoint.second + yTranslation.toFloat()
-                ),
-                Pair(
-                    it.endPoint.first + getXTranslationToConcealLineCorners(xTranslation, dashAngle, true),
-                    it.endPoint.second - yTranslation.toFloat()
-                )
-            )
-        }
-    }
-
     private fun getLinesOriginatingFromYAxis(
         dashAngle: Int,
         viewHeight: Float,
@@ -265,6 +222,49 @@ class DashedView @JvmOverloads constructor(
         // Translate start and end points so all 4 corners of dash are drawn outside of the view
 
         return lineCoordinates
+    }
+
+    /**
+     * Elongate the dashes enough so that all 4 corners of each dash are extended out of the view
+     * canvas
+     */
+    private fun elongateDashesOriginatingFromXAxis(
+        dashAngle: Int,
+        dashWidth: Float,
+        initialPositions: List<LineCoordinates>
+    ): List<LineCoordinates> {
+        val hypotRadians = Math.toRadians((abs(90 - dashAngle).toDouble()))
+        val translationHypot = (dashWidth * tan((hypotRadians))) / 2
+        val xTranslation = translationHypot * sin(Math.toRadians((abs(90 - dashAngle).toDouble())))
+        val yTranslation = translationHypot * cos(Math.toRadians((abs(90 - dashAngle).toDouble())))
+
+        return initialPositions.map {
+            LineCoordinates(
+                Pair(
+                    it.startPoint.first + getXTranslationToConcealLineCorners(xTranslation, dashAngle, false),
+                    it.startPoint.second + yTranslation.toFloat()
+                ),
+                Pair(
+                    it.endPoint.first + getXTranslationToConcealLineCorners(xTranslation, dashAngle, true),
+                    it.endPoint.second - yTranslation.toFloat()
+                )
+            )
+        }
+    }
+
+    private fun getDashDirection(dashAngle: Int): DashDirection {
+        return when {
+            dashAngle == 0 -> DashDirection.LeftToRight(true)
+            dashAngle < 90 -> DashDirection.LeftToRight(false)
+            dashAngle == 90 -> DashDirection.Vertical
+            dashAngle < 180 -> DashDirection.RightToLeft(false)
+            else -> DashDirection.RightToLeft(true)
+        }
+    }
+
+    private fun getEndPointXTranslation(angle: Int, viewHeight: Float): Float {
+        val radians = Math.toRadians(angle.toDouble())
+        return viewHeight / tan(radians).toFloat() // todo check for divide by 0
     }
 
     private fun calculateVerticalOffset(width: Float, angle: Int): Float {
