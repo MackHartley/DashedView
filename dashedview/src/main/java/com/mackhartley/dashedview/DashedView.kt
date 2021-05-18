@@ -19,13 +19,12 @@ class DashedView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    //todo dash offset
-        //Fix top of view Y axis positions
-        // Fix left and right sides
-    // 0 degree angle needs to work
     // Todo dashes need to draw correctly when greater than 90 degrees
+    // 0 degree angle needs to work
     //todo steps could be padded with an extra start and end step. This would avoid missing lines
     // Todo consolidate as many math calls as possible for efficiency sake
+
+    // todo test performance
 
     //TOdo use VIEW_TOP and other helpers whereever it makes code more readable
 
@@ -226,7 +225,7 @@ class DashedView @JvmOverloads constructor(
             lineCoordinates
         )
 
-        return lineCoordinates
+        return elongatedLineCoordinates
     }
 
     /**
@@ -266,7 +265,21 @@ class DashedView @JvmOverloads constructor(
         dashWidth: Float,
         initialPositions: List<LineCoordinates>
     ): List<LineCoordinates> {
-        return emptyList()
+
+        val hypotRadians = Math.toRadians(dashAngle.toDouble())
+        val translationHypot = (dashWidth * tan(hypotRadians)) / 2
+        val xTranslation = (translationHypot * cos(hypotRadians)).toFloat()
+        val yTranslation = (translationHypot * sin(hypotRadians)).toFloat()
+
+        return initialPositions.map {
+            LineCoordinates(
+                Pair(
+                    it.startPoint.first - xTranslation,
+                    it.startPoint.second + yTranslation
+                ),
+                it.endPoint // Endpoint can remain unchanged for lines drawn from Y Axis. Their top corners wont show
+            )
+        }
     }
 
     private fun getDashDirection(dashAngle: Int): DashDirection {

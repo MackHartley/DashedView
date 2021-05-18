@@ -8,11 +8,11 @@
 
     <com.mackhartley.dashedview.DashedView
         android:layout_width="300dp"
-        android:layout_height="500dp"
-        app:dashWidth="50dp"
-        app:dashAngle="47"
+        android:layout_height="300dp"
+        app:dashWidth="5dp"
+        app:dashAngle="130"
         app:cornerRadius="0dp"
-        app:spaceBetweenDashes="10dp"
+        app:spaceBetweenDashes="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
