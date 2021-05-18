@@ -205,7 +205,9 @@ class DashedView @JvmOverloads constructor(
         val startXPosition = if (dashDirection is DashDirection.LeftToRight) 0f else viewWidth
 
         var curYPosition = viewHeight // This is the bottom left corner of the view
-        curYPosition -= (calculateVerticalOffset(dashWidth, dashAngle) + calculateVerticalOffset(spaceBetweenDashes, dashAngle)) // The y = 0 position already has a dash drawn from the x axis
+        if (!dashDirection.isHorizontal) // If lines will be drawn from the x axis
+            curYPosition -= (calculateVerticalOffset(dashWidth, dashAngle) + calculateVerticalOffset(spaceBetweenDashes, dashAngle)) // The y = 0 position already has a dash drawn from the x axis
+
         while (curYPosition >= 0) {
             startPositions.add(Pair(startXPosition, curYPosition)) // todo ensure this never becomes an infinite loop. Same for all other loops
             curYPosition -= abs(calculateVerticalOffset(dashWidth, dashAngle) + calculateVerticalOffset(spaceBetweenDashes, dashAngle)) // The y = 0 position already has a dash drawn from the horizontal algo
