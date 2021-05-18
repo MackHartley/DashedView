@@ -19,8 +19,6 @@ class DashedView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    //todo fix color ordering
-    // Todo dashes need to draw correctly when greater than 90 degrees
     // 0 degree angle needs to work
     //todo steps could be padded with an extra start and end step. This would avoid missing lines
     // Todo consolidate as many math calls as possible for efficiency sake
@@ -116,7 +114,7 @@ class DashedView @JvmOverloads constructor(
 
             val allLinesToDraw = when (getDashDirection(dashAngle)) {
                 is DashDirection.LeftToRight -> linesOriginatingFromYAxis.reversed() + linesOriginatingFromXAxis
-                is DashDirection.RightToLeft -> linesOriginatingFromXAxis + linesOriginatingFromYAxis
+                is DashDirection.RightToLeft -> linesOriginatingFromXAxis.reversed() + linesOriginatingFromYAxis
                 else -> linesOriginatingFromXAxis
             }
 
