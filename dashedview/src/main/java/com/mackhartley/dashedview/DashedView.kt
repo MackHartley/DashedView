@@ -20,7 +20,6 @@ class DashedView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     // 0 degree angle needs to work
-    //todo steps could be padded with an extra start and end step. This would avoid missing lines
     // Todo consolidate as many math calls as possible for efficiency sake
 
     // todo test performance
@@ -150,19 +149,21 @@ class DashedView @JvmOverloads constructor(
         val startPoints = mutableListOf<Pair<Float, Float>>()
         val startYPosition = viewHeight
 
+        var curXPosition: Float
         if (dashDirection is DashDirection.LeftToRight) {
-            var curXPosition = 0f
+            curXPosition = 0f
             while (curXPosition <= width) {
                 startPoints.add(Pair(curXPosition, startYPosition))
                 curXPosition += (calculateHypotenuseLen(dashAngle, dashWidth) + calculateHypotenuseLen(dashAngle, spaceBetweenDashes))
             }
         } else { // If the dashes are pointing from right to left, then start drawing dashes from the bottom right corner of the view
-            var curXPosition = width
+            curXPosition = width
             while (curXPosition >= 0) {
                 startPoints.add(Pair(curXPosition, startYPosition))
                 curXPosition -= (calculateHypotenuseLen(dashAngle, dashWidth) + calculateHypotenuseLen(dashAngle, spaceBetweenDashes))
             }
         }
+        startPoints.add(Pair(curXPosition, startYPosition)) // Add one more line to ensure the view is not missing one on the end
 
         // Calculate translation required to generate end point for a given start point
         // Apply translation to list of start points to get line coordinates for dashes
@@ -209,6 +210,7 @@ class DashedView @JvmOverloads constructor(
             startPositions.add(Pair(startXPosition, curYPosition)) // todo ensure this never becomes an infinite loop. Same for all other loops
             curYPosition -= abs(calculateVerticalOffset(dashWidth, dashAngle) + calculateVerticalOffset(spaceBetweenDashes, dashAngle)) // The y = 0 position already has a dash drawn from the horizontal algo
         }
+        startPositions.add(Pair(startXPosition, curYPosition)) // Add one more line to ensure the view is not missing one on the end
 
         // Calculate translation required to generate end point for a given start point
         // Apply translation to list of start points to get line coordinates for dashes
