@@ -19,6 +19,7 @@ class DashedView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    //todo fix color ordering
     // Todo dashes need to draw correctly when greater than 90 degrees
     // 0 degree angle needs to work
     //todo steps could be padded with an extra start and end step. This would avoid missing lines
@@ -150,10 +151,19 @@ class DashedView @JvmOverloads constructor(
         // Calculate start points
         val startPoints = mutableListOf<Pair<Float, Float>>()
         val startYPosition = viewHeight
-        var curXPosition = 0f
-        while (curXPosition <= width) {
-            startPoints.add(Pair(curXPosition, startYPosition))
-            curXPosition += (calculateHypotenuseLen(dashAngle, dashWidth) + calculateHypotenuseLen(dashAngle, spaceBetweenDashes))
+
+        if (dashDirection is DashDirection.LeftToRight) {
+            var curXPosition = 0f
+            while (curXPosition <= width) {
+                startPoints.add(Pair(curXPosition, startYPosition))
+                curXPosition += (calculateHypotenuseLen(dashAngle, dashWidth) + calculateHypotenuseLen(dashAngle, spaceBetweenDashes))
+            }
+        } else { // If the dashes are pointing from right to left, then start drawing dashes from the bottom right corner of the view
+            var curXPosition = width
+            while (curXPosition >= 0) {
+                startPoints.add(Pair(curXPosition, startYPosition))
+                curXPosition -= (calculateHypotenuseLen(dashAngle, dashWidth) + calculateHypotenuseLen(dashAngle, spaceBetweenDashes))
+            }
         }
 
         // Calculate translation required to generate end point for a given start point
@@ -241,6 +251,7 @@ class DashedView @JvmOverloads constructor(
         val translationHypot = (dashWidth * tan((hypotRadians))) / 2
         val xTranslation = translationHypot * sin(Math.toRadians((abs(90 - dashAngle).toDouble())))
         val yTranslation = translationHypot * cos(Math.toRadians((abs(90 - dashAngle).toDouble())))
+        // todo change to use translation modifier
 
         return initialPositions.map {
             LineCoordinates(
@@ -268,13 +279,19 @@ class DashedView @JvmOverloads constructor(
 
         val hypotRadians = Math.toRadians(dashAngle.toDouble())
         val translationHypot = (dashWidth * tan(hypotRadians)) / 2
-        val xTranslation = (translationHypot * cos(hypotRadians)).toFloat()
-        val yTranslation = (translationHypot * sin(hypotRadians)).toFloat()
+        val xTranslation = abs(translationHypot * cos(hypotRadians)).toFloat()
+        val yTranslation = abs(translationHypot * sin(hypotRadians)).toFloat()
+
+        val translationModifier = when (getDashDirection(dashAngle)) {
+            is DashDirection.LeftToRight -> -1
+            is DashDirection.RightToLeft -> 1
+            DashDirection.Vertical -> 0
+        }
 
         return initialPositions.map {
             LineCoordinates(
                 Pair(
-                    it.startPoint.first - xTranslation,
+                    it.startPoint.first + (xTranslation * translationModifier),
                     it.startPoint.second + yTranslation
                 ),
                 it.endPoint // Endpoint can remain unchanged for lines drawn from Y Axis. Their top corners wont show
