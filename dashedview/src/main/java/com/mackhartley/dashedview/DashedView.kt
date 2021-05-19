@@ -13,6 +13,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
 
+// todo ensure this never becomes an infinite loop. Same for all other loops
 //todo check that startPoint and endPoint all have same case
 // todo check all doc string descriptions
 //TOdo use VIEW_TOP and other helpers whereever it makes code more readable
@@ -143,12 +144,13 @@ class DashedView @JvmOverloads constructor(
                 viewHeight = height.toFloat()
             )
             val dashDirection = getDashDirection(dashAngle)
-            val allLinesToDraw = when {
-                dashDirection.isHorizontal -> linesOriginatingFromYAxis // If horizontal, dont draw lines originating from X axis
-                dashDirection is DashDirection.LeftToRight -> linesOriginatingFromYAxis.reversed() + linesOriginatingFromXAxis
-                dashDirection is DashDirection.RightToLeft -> linesOriginatingFromXAxis.reversed() + linesOriginatingFromYAxis
-                else -> linesOriginatingFromXAxis // If vertical, dont draw lines from Y axis
-            }
+            val allLinesToDraw =
+                if (dashDirection.isHorizontal) linesOriginatingFromYAxis // If horizontal, only draw lines originating from Y axis
+                else when (dashDirection) {
+                    is DashDirection.LeftToRight -> linesOriginatingFromYAxis.reversed() + linesOriginatingFromXAxis
+                    is DashDirection.RightToLeft -> linesOriginatingFromXAxis.reversed() + linesOriginatingFromYAxis
+                    is DashDirection.Vertical -> linesOriginatingFromXAxis // If vertical, only draw lines originating from X axis
+                }
 
             // Loop through coordinate list and draw lines
             for ((index, curCoords) in allLinesToDraw.withIndex()) {
@@ -193,8 +195,8 @@ class DashedView @JvmOverloads constructor(
                 curXPosition = 0f
                 while (curXPosition <= viewWidth) {
                     startPoints.add(Pair(curXPosition, startYPosition))
-                    val dashHorizontalOffset = calculateHypotenuseLen(dashAngle, dashWidth)
-                    val spaceHorizontalOffset = calculateHypotenuseLen(dashAngle, spaceBetweenDashes)
+                    val dashHorizontalOffset = calculateHorizontalOffset(dashAngle, dashWidth)
+                    val spaceHorizontalOffset = calculateHorizontalOffset(dashAngle, spaceBetweenDashes)
                     curXPosition += abs(dashHorizontalOffset + spaceHorizontalOffset)
                 }
             }
@@ -202,8 +204,8 @@ class DashedView @JvmOverloads constructor(
                 curXPosition = viewWidth
                 while (curXPosition >= 0) {
                     startPoints.add(Pair(curXPosition, startYPosition))
-                    val dashHorizontalOffset = calculateHypotenuseLen(dashAngle, dashWidth)
-                    val spaceHorizontalOffset = calculateHypotenuseLen(dashAngle, spaceBetweenDashes)
+                    val dashHorizontalOffset = calculateHorizontalOffset(dashAngle, dashWidth)
+                    val spaceHorizontalOffset = calculateHorizontalOffset(dashAngle, spaceBetweenDashes)
                     curXPosition -= abs(dashHorizontalOffset + spaceHorizontalOffset)
                 }
             }
@@ -227,7 +229,7 @@ class DashedView @JvmOverloads constructor(
         }
 
         // Translate start and end points so all 4 corners of dash are drawn outside of the view
-        val elongatedLineCoordinates = elongateDashesOriginatingFromXAxis( // todo refactor
+        val elongatedLineCoordinates = elongateDashesOriginatingFromXAxis(
             initialPositions = lineCoordinates,
             dashAngle = dashAngle,
             dashWidth = dashWidth
@@ -254,14 +256,14 @@ class DashedView @JvmOverloads constructor(
 
         var curYPosition = viewHeight
         if (!dashDirection.isHorizontal) { // If lines will be drawn from the x axis, then skip drawing a line for the first y position which is equalt to the first x position
-            val dashVerticalOffset = calculateVerticalOffset(dashWidth, dashAngle) // todo refactor
-            val spaceVerticalOffset = calculateVerticalOffset(spaceBetweenDashes, dashAngle)
+            val dashVerticalOffset = calculateVerticalOffset(dashAngle, dashWidth)
+            val spaceVerticalOffset = calculateVerticalOffset(dashAngle, spaceBetweenDashes)
             curYPosition -= abs(dashVerticalOffset + spaceVerticalOffset)
         }
         while (curYPosition >= VIEW_TOP) {
-            val dashVerticalOffset = calculateVerticalOffset(dashWidth, dashAngle)
-            val spaceVerticalOffset = calculateVerticalOffset(spaceBetweenDashes, dashAngle)
-            startPositions.add(Pair(startXPosition, curYPosition)) // todo ensure this never becomes an infinite loop. Same for all other loops
+            val dashVerticalOffset = calculateVerticalOffset(dashAngle, dashWidth)
+            val spaceVerticalOffset = calculateVerticalOffset(dashAngle, spaceBetweenDashes)
+            startPositions.add(Pair(startXPosition, curYPosition))
             curYPosition -= abs(dashVerticalOffset + spaceVerticalOffset)
         }
         startPositions.add(Pair(startXPosition, curYPosition)) // Add one more line to ensure the view is fully covered by lines
@@ -274,7 +276,7 @@ class DashedView @JvmOverloads constructor(
                     it.first,
                     it.second
                 ),
-                endPoint = calculateEndPoint( // todo refactor
+                endPoint = calculateEndPoint(
                     startPoint = it,
                     dashAngle = dashAngle,
                     endPointYValue = it.second - viewHeight,// Subtract view height because each of these lines has a different start point Y value
@@ -286,9 +288,9 @@ class DashedView @JvmOverloads constructor(
 
         // Translate start and end points so all 4 corners of dash are drawn outside of the view
         val elongatedLineCoordinates = elongateDashesOriginatingFromYAxis(
-            dashAngle,
-            dashWidth,
-            lineCoordinates
+            initialPositions = lineCoordinates,
+            dashAngle = dashAngle,
+            dashWidth = dashWidth
         )
 
         return elongatedLineCoordinates
@@ -311,11 +313,11 @@ class DashedView @JvmOverloads constructor(
         return initialPositions.map {
             LineCoordinates(
                 Pair(
-                    it.startPoint.first + getXTranslationToConcealLineCorners(xTranslation, dashAngle, false),
+                    it.startPoint.first + calculateModifiedXTranslation(xTranslation, dashAngle, false),
                     it.startPoint.second + yTranslation.toFloat()
                 ),
                 Pair(
-                    it.endPoint.first + getXTranslationToConcealLineCorners(xTranslation, dashAngle, true),
+                    it.endPoint.first + calculateModifiedXTranslation(xTranslation, dashAngle, true),
                     it.endPoint.second - yTranslation.toFloat()
                 )
             )
@@ -327,17 +329,17 @@ class DashedView @JvmOverloads constructor(
      * canvas
      */
     private fun elongateDashesOriginatingFromYAxis(
+        initialPositions: List<LineCoordinates>,
         dashAngle: Int,
-        dashWidth: Float,
-        initialPositions: List<LineCoordinates>
+        dashWidth: Float
     ): List<LineCoordinates> {
+        val hypotenuseRadians = Math.toRadians(dashAngle.toDouble())
+        val translationHypotenuse = (dashWidth * tan(hypotenuseRadians)) / 2 // This is the amount the point must move
+        val xTranslation = abs(translationHypotenuse * cos(hypotenuseRadians)).toFloat()
+        val yTranslation = abs(translationHypotenuse * sin(hypotenuseRadians)).toFloat()
 
-        val hypotRadians = Math.toRadians(dashAngle.toDouble())
-        val translationHypot = (dashWidth * tan(hypotRadians)) / 2
-        val xTranslation = abs(translationHypot * cos(hypotRadians)).toFloat()
-        val yTranslation = abs(translationHypot * sin(hypotRadians)).toFloat()
-
-        val translationModifier = when (getDashDirection(dashAngle)) {
+        // Depending on the direction of lines the translation value needs to be negative
+        val xTranslationModifier = when (getDashDirection(dashAngle)) {
             is DashDirection.LeftToRight -> -1
             is DashDirection.RightToLeft -> 1
             DashDirection.Vertical -> 0
@@ -346,7 +348,7 @@ class DashedView @JvmOverloads constructor(
         return initialPositions.map {
             LineCoordinates(
                 Pair(
-                    it.startPoint.first + (xTranslation * translationModifier),
+                    it.startPoint.first + (xTranslation * xTranslationModifier),
                     it.startPoint.second + yTranslation
                 ),
                 it.endPoint // Endpoint can remain unchanged for lines drawn from Y Axis. Their top corners wont show
@@ -398,18 +400,12 @@ class DashedView @JvmOverloads constructor(
 //        return sqrt(xDiff.toDouble().pow(2.0) + yDiff.toDouble().pow(2.0)).toFloat()
 //    }
 
-    private fun calculateVerticalOffset(width: Float, angle: Int): Float {
-        val complementaryAngle = Math.toRadians(abs(90 - angle).toDouble())
-        val halfVerticalLengthDashCrossSection = width / (2 * sin(complementaryAngle))
-        return halfVerticalLengthDashCrossSection.toFloat() * 2f
-    }
-
     /**
      * Gets the x translation required to sufficiently cover the corners of a line. Essentially this
      * function give info on how far a line should be extended so it doesn't show it's corners. This
      * is more important when dashes get thicker and resemble rectangles instead of lines
      */
-    private fun getXTranslationToConcealLineCorners(
+    private fun calculateModifiedXTranslation(
         xTranslation: Double,
         dashAngle: Int,
         isEndPoint: Boolean
@@ -431,12 +427,19 @@ class DashedView @JvmOverloads constructor(
 
     // todo write unit tests
     /**
-     * Because the dashes can be drawn at an angle, the distance from one dash to the next should actually be
-     * calculated using the hypotenuse.
+     * Because the dashes can be drawn at an angle, the distance from one dash to the next should
+     * actually be calculated using the hypotenuse. This method calculates that distance for
+     * dashes and the spaces between dashes.
      */
-    private fun calculateHypotenuseLen(angle: Int, dashWidth: Float): Float {
+    private fun calculateHorizontalOffset(angle: Int, width: Float): Float {
         val radians = Math.toRadians((90 - angle).toDouble())
-        return dashWidth / (cos(radians)).toFloat()
+        return width / (cos(radians)).toFloat()
+    }
+
+    private fun calculateVerticalOffset(angle: Int, width: Float): Float {
+        val complementaryAngle = Math.toRadians(abs(90 - angle).toDouble())
+        val halfVerticalLengthDashCrossSection = width / (2 * sin(complementaryAngle))
+        return halfVerticalLengthDashCrossSection.toFloat() * 2f
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
