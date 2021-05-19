@@ -213,7 +213,14 @@ class DashedView @JvmOverloads constructor(
         val lineCoordinates = startPoints.map {
             LineCoordinates(
                 startPoint = it,
-                endPoint = getEndPoint(it, VIEW_TOP, dashAngle, viewHeight, viewWidth) // todo refactor
+                endPoint =
+                    calculateEndPoint(
+                        startPoint = it,
+                        dashAngle = dashAngle,
+                        endPointYValue = VIEW_TOP,
+                        viewHeight = viewHeight,
+                        viewWidth =viewWidth
+                    )
             )
         }
 
@@ -265,10 +272,10 @@ class DashedView @JvmOverloads constructor(
                     it.first,
                     it.second
                 ),
-                endPoint = getEndPoint( // todo refactor
+                endPoint = calculateEndPoint( // todo refactor
                     startPoint = it,
-                    endY = it.second - viewHeight,// Subtract view height because each of these lines has a different start point Y value
-                    angle = dashAngle,
+                    dashAngle = dashAngle,
+                    endPointYValue = it.second - viewHeight,// Subtract view height because each of these lines has a different start point Y value
                     viewHeight = viewHeight,
                     viewWidth = viewWidth
                 )
@@ -346,23 +353,20 @@ class DashedView @JvmOverloads constructor(
         }
     }
 
-    private fun getDashDirection(dashAngle: Int): DashDirection {
-        return when {
-            dashAngle == 0 -> DashDirection.LeftToRight(true)
-            dashAngle < 90 -> DashDirection.LeftToRight(false)
-            dashAngle == 90 -> DashDirection.Vertical
-            else -> DashDirection.RightToLeft(false)
-        }
-    }
-
-    private fun getEndPoint(startPoint: Pair<Float, Float>, endY: Float, angle: Int, viewHeight: Float, viewWidth: Float): Pair<Float, Float> {
+    private fun calculateEndPoint(
+        startPoint: Pair<Float, Float>,
+        dashAngle: Int,
+        endPointYValue: Float,
+        viewHeight: Float,
+        viewWidth: Float
+    ): Pair<Float, Float> {
 //        val maxLength = lineLength(Pair(0f, 0f), Pair(viewWidth, viewHeight))
-        if (getDashDirection(angle).isHorizontal) return Pair(viewWidth, startPoint.second)
+        if (getDashDirection(dashAngle).isHorizontal) return Pair(viewWidth, startPoint.second)
 
-        val radians = Math.toRadians(angle.toDouble())
+        val radians = Math.toRadians(dashAngle.toDouble())
         val endXTrans = viewHeight / tan(radians).toFloat()
 
-        val endPoint = Pair(startPoint.first + endXTrans, endY)
+        val endPoint = Pair(startPoint.first + endXTrans, endPointYValue)
 //        val closestPossibleEndPoint = calculateClosest(endPoint, startPoint, maxLength) todo get working
         return endPoint
 

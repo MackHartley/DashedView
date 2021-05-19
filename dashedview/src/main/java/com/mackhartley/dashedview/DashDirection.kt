@@ -17,3 +17,14 @@ sealed class DashDirection(
     class RightToLeft(isHorizontal: Boolean) : DashDirection(isHorizontal)
     object Vertical : DashDirection(false)
 }
+
+
+// todo write unit test
+fun getDashDirection(dashAngle: Int): DashDirection {
+    return when {
+        dashAngle == 0 -> DashDirection.LeftToRight(true)
+        dashAngle < 90 -> DashDirection.LeftToRight(false)
+        dashAngle == 90 -> DashDirection.Vertical
+        else -> DashDirection.RightToLeft(false)
+    }
+}
