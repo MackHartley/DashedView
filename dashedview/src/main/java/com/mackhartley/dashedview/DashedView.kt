@@ -23,7 +23,6 @@ class DashedView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     // todo need to be able to set dash color interface
-    // todo remove right to left horizontal enum. 180 is now rerouted to 0 degrees
     // Todo consolidate as many math calls as possible for efficiency sake
     // Future improvement: Could limit max length of lines. For low dash angles such as 1 - 5 the lines are drawn quite far outside of the screen.
     // todo test performance
@@ -120,10 +119,12 @@ class DashedView @JvmOverloads constructor(
             val linesOriginatingFromXAxis = getLinesOriginatingFromXAxis(width.toFloat(), dashWidth, spaceBetweenDashes, dashAngle, height.toFloat())
             val linesOriginatingFromYAxis = getLinesOriginatingFromYAxis(dashAngle, height.toFloat(), width.toFloat(), dashWidth, spaceBetweenDashes) //todo make these have same args list
 
-            val allLinesToDraw = when (getDashDirection(dashAngle)) {
-                is DashDirection.LeftToRight -> linesOriginatingFromYAxis.reversed() + linesOriginatingFromXAxis
-                is DashDirection.RightToLeft -> linesOriginatingFromXAxis.reversed() + linesOriginatingFromYAxis
-                else -> linesOriginatingFromXAxis
+            val dashDirection = getDashDirection(dashAngle)
+            val allLinesToDraw = when {
+                dashDirection.isHorizontal -> linesOriginatingFromYAxis // If horizontal, dont draw lines originating from X axis
+                dashDirection is DashDirection.LeftToRight -> linesOriginatingFromYAxis.reversed() + linesOriginatingFromXAxis
+                dashDirection is DashDirection.RightToLeft -> linesOriginatingFromXAxis.reversed() + linesOriginatingFromYAxis
+                else -> linesOriginatingFromXAxis // If vertical, dont draw lines from Y axis
             }
 
             for ((index, curCoords) in allLinesToDraw.withIndex()) {
@@ -159,17 +160,22 @@ class DashedView @JvmOverloads constructor(
         val startYPosition = viewHeight
 
         var curXPosition: Float
-        if (dashDirection is DashDirection.LeftToRight) {
-            curXPosition = 0f
-            while (curXPosition <= width) {
-                startPoints.add(Pair(curXPosition, startYPosition))
-                curXPosition += (calculateHypotenuseLen(dashAngle, dashWidth) + calculateHypotenuseLen(dashAngle, spaceBetweenDashes))
+
+        when (dashDirection) {
+            is DashDirection.LeftToRight,
+            is DashDirection.Vertical -> {
+                curXPosition = 0f
+                while (curXPosition <= width) {
+                    startPoints.add(Pair(curXPosition, startYPosition))
+                    curXPosition += (calculateHypotenuseLen(dashAngle, dashWidth) + calculateHypotenuseLen(dashAngle, spaceBetweenDashes))
+                }
             }
-        } else { // If the dashes are pointing from right to left, then start drawing dashes from the bottom right corner of the view
-            curXPosition = width
-            while (curXPosition >= 0) {
-                startPoints.add(Pair(curXPosition, startYPosition))
-                curXPosition -= (calculateHypotenuseLen(dashAngle, dashWidth) + calculateHypotenuseLen(dashAngle, spaceBetweenDashes))
+            is DashDirection.RightToLeft -> { // If the dashes are pointing from right to left, then start drawing dashes from the bottom right corner of the view
+                curXPosition = width
+                while (curXPosition >= 0) {
+                    startPoints.add(Pair(curXPosition, startYPosition))
+                    curXPosition -= (calculateHypotenuseLen(dashAngle, dashWidth) + calculateHypotenuseLen(dashAngle, spaceBetweenDashes))
+                }
             }
         }
         startPoints.add(Pair(curXPosition, startYPosition)) // Add one more line to ensure the view is not missing one on the end
@@ -313,8 +319,7 @@ class DashedView @JvmOverloads constructor(
             dashAngle == 0 -> DashDirection.LeftToRight(true)
             dashAngle < 90 -> DashDirection.LeftToRight(false)
             dashAngle == 90 -> DashDirection.Vertical
-            dashAngle < 180 -> DashDirection.RightToLeft(false)
-            else -> DashDirection.RightToLeft(true)
+            else -> DashDirection.RightToLeft(false)
         }
     }
 
