@@ -8,9 +8,12 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.ColorInt
+import java.lang.Math.pow
 import kotlin.math.abs
 import kotlin.math.cos
+import kotlin.math.pow
 import kotlin.math.sin
+import kotlin.math.sqrt
 import kotlin.math.tan
 
 class DashedView @JvmOverloads constructor(
@@ -19,20 +22,22 @@ class DashedView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    // 0 degree angle needs to work
+    // todo need to be able to set dash color interface
+    // todo remove right to left horizontal enum. 180 is now rerouted to 0 degrees
     // Todo consolidate as many math calls as possible for efficiency sake
-
+    // Future improvement: Could limit max length of lines. For low dash angles such as 1 - 5 the lines are drawn quite far outside of the screen.
     // todo test performance
 
     //TOdo use VIEW_TOP and other helpers whereever it makes code more readable
 
     // Make git project:
-        // Todo would be nice to be able to set an outline stroke with a custom width and color
+    // Todo would be nice to be able to set an outline stroke with a custom width and color
 
     // Instance state
     private var dashWidth = DEFAULT_WIDTH
     private var spaceBetweenDashes = DEFAULT_SPACE_BETWEEN_DASHES
     private var dashAngle = DEFAULT_DASH_ANGLE
+
     @ColorInt
     private var dashColor = DEFAULT_COLOR
     private var cornerRadius = DEFAULT_CORNER_RADIUS
@@ -56,7 +61,7 @@ class DashedView @JvmOverloads constructor(
     private val dashPaint by lazy {
         Paint().apply {
             strokeCap = Paint.Cap.BUTT
-            color = Color.RED
+            color = dashColor
             strokeWidth = dashWidth
             isAntiAlias = true
         }
@@ -85,9 +90,9 @@ class DashedView @JvmOverloads constructor(
         const val DEFAULT_SPACE_BETWEEN_DASHES = 4f
         const val DEFAULT_COLOR = Color.GRAY
         const val DEFAULT_CORNER_RADIUS = 0f
-        const val VIEW_LEFT = 0f
+        const val VIEW_LEFT = 0f // todo use this somehow
         const val VIEW_TOP = 0f
-        const val DEFAULT_DASH_ANGLE = 45 // Measured in degrees. Min 0, max 180
+        const val DEFAULT_DASH_ANGLE = 45 // Measured in degrees. Min 0, max 179
     }
 
     init {
@@ -98,9 +103,13 @@ class DashedView @JvmOverloads constructor(
         cornerRadius = attrRefs.getDimension(R.styleable.DashedView_cornerRadius, DEFAULT_CORNER_RADIUS)
 
         val requestedAngle = attrRefs.getInteger(R.styleable.DashedView_dashAngle, DEFAULT_DASH_ANGLE)
-        dashAngle = if (requestedAngle < 0) 0 else if (requestedAngle > 180) 180 else requestedAngle
+        dashAngle = parseRequestedDashAngle(requestedAngle)
 
         attrRefs.recycle()
+    }
+
+    private fun parseRequestedDashAngle(requestedAngle: Int): Int {
+        return requestedAngle % 180
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -167,14 +176,10 @@ class DashedView @JvmOverloads constructor(
 
         // Calculate translation required to generate end point for a given start point
         // Apply translation to list of start points to get line coordinates for dashes
-        val endPointXTranslation = getEndPointXTranslation(dashAngle, viewHeight)
         val lineCoordinates = startPoints.map {
             LineCoordinates(
                 startPoint = it,
-                endPoint = Pair(
-                    it.first + endPointXTranslation,
-                    VIEW_TOP
-                )
+                endPoint = getEndPoint(it, VIEW_TOP, dashAngle, viewHeight, width)
             )
         }
 
@@ -216,16 +221,18 @@ class DashedView @JvmOverloads constructor(
 
         // Calculate translation required to generate end point for a given start point
         // Apply translation to list of start points to get line coordinates for dashes
-        val endPointXTranslation = getEndPointXTranslation(dashAngle, viewHeight)
         val lineCoordinates = startPositions.map {
             LineCoordinates(
                 startPoint = Pair(
                     it.first,
                     it.second
                 ),
-                endPoint = Pair(
-                    it.first + endPointXTranslation,
-                    it.second - viewHeight // Subtract view height because each of these lines has a different start point Y value
+                endPoint = getEndPoint(
+                    startPoint = it,
+                    endY = it.second - viewHeight,// Subtract view height because each of these lines has a different start point Y value
+                    angle = dashAngle,
+                    viewHeight = viewHeight,
+                    viewWidth = viewWidth
                 )
             )
         }
@@ -311,10 +318,43 @@ class DashedView @JvmOverloads constructor(
         }
     }
 
-    private fun getEndPointXTranslation(angle: Int, viewHeight: Float): Float {
+    private fun getEndPoint(startPoint: Pair<Float, Float>, endY: Float, angle: Int, viewHeight: Float, viewWidth: Float): Pair<Float, Float> {
+//        val maxLength = lineLength(Pair(0f, 0f), Pair(viewWidth, viewHeight))
+        if (getDashDirection(angle).isHorizontal) return Pair(viewWidth, startPoint.second)
+
         val radians = Math.toRadians(angle.toDouble())
-        return viewHeight / tan(radians).toFloat() // todo check for divide by 0
+        val endXTrans = viewHeight / tan(radians).toFloat()
+
+        val endPoint = Pair(startPoint.first + endXTrans, endY)
+//        val closestPossibleEndPoint = calculateClosest(endPoint, startPoint, maxLength) todo get working
+        return endPoint
+
+
     }
+
+//    private fun calculateClosest(
+//        endPoint: Pair<Float, Float>,
+//        startPoint: Pair<Float, Float>,
+//        maxLen: Float
+//    ): Pair<Float, Float> {
+//        val pointDist = lineLength(startPoint, endPoint)
+//        if (pointDist > maxLen) {
+//            val reductionRatio = maxLen / pointDist
+//
+//            val xDiff
+//            return Pair(
+//                endPoint.first * reductionRatio,
+//                endPoint.second * reductionRatio
+//            )
+//        }
+//        return endPoint
+//    }
+//
+//    private fun lineLength(start: Pair<Float, Float>, end: Pair<Float, Float>): Float {
+//        val xDiff = abs(start.first - end.first)
+//        val yDiff = abs(start.second - end.second)
+//        return sqrt(xDiff.toDouble().pow(2.0) + yDiff.toDouble().pow(2.0)).toFloat()
+//    }
 
     private fun calculateVerticalOffset(width: Float, angle: Int): Float {
         val complementaryAngle = Math.toRadians(abs(90 - angle).toDouble())

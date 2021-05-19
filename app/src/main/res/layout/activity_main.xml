@@ -7,12 +7,13 @@
     tools:context=".MainActivity">
 
     <com.mackhartley.dashedview.DashedView
-        android:layout_width="300dp"
+        android:layout_width="200dp"
         android:layout_height="300dp"
-        app:dashWidth="23dp"
-        app:dashAngle="180"
-        app:cornerRadius="40dp"
-        app:spaceBetweenDashes="5dp"
+        app:dashWidth="10dp"
+        app:dashAngle="145"
+        app:cornerRadius="90dp"
+        app:dashColor="#0ff"
+        app:spaceBetweenDashes="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
