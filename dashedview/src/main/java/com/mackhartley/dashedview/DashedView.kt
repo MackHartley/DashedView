@@ -13,15 +13,14 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
 
-// todo ensure this never becomes an infinite loop. Same for all other loops
-//todo check that startPoint and endPoint all have same case
-// todo check all doc string descriptions
-//TOdo use VIEW_TOP and other helpers whereever it makes code more readable
-// Future improvement: Could limit max length of lines. For low dash angles such as 1 - 5 the lines are drawn quite far outside of the screen.
 // Todo consolidate as many math calls as possible for efficiency sake
+// todo test performance
 
 // todo need to be able to set dash color interface
-// todo test performance
+
+// todo check all doc string descriptions
+// todo improvement: Could limit max length of lines. For low dash angles such as 1 - 5 the lines are drawn quite far outside of the screen.
+
 
 
 // Make git project:
@@ -47,8 +46,8 @@ class DashedView @JvmOverloads constructor(
     private val roundedCornersClipPath by lazy { // This path is used to clip the progress background and drawable to the desired corner radius
         Path().apply {
             addRoundRect(
-                0f,
-                0f,
+                VIEW_LEFT,
+                VIEW_TOP,
                 lastWidth.toFloat(),
                 lastHeight.toFloat(),
                 floatArrayOf(cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius),
@@ -90,7 +89,7 @@ class DashedView @JvmOverloads constructor(
         const val DEFAULT_CORNER_RADIUS = 0f
         const val DEFAULT_DASH_COLOR = Color.GRAY
 
-        const val VIEW_LEFT = 0f // todo use this somehow
+        const val VIEW_LEFT = 0f
         const val VIEW_TOP = 0f
     }
 
@@ -192,7 +191,7 @@ class DashedView @JvmOverloads constructor(
         when (dashDirection) {
             is DashDirection.LeftToRight,
             is DashDirection.Vertical -> {
-                curXPosition = 0f
+                curXPosition = VIEW_LEFT
                 while (curXPosition <= viewWidth) {
                     startPoints.add(Pair(curXPosition, startYPosition))
                     val dashHorizontalOffset = calculateHorizontalOffset(dashAngle, dashWidth)
@@ -202,7 +201,7 @@ class DashedView @JvmOverloads constructor(
             }
             is DashDirection.RightToLeft -> { // If the dashes are pointing from right to left, then start drawing dashes from the bottom right corner of the view
                 curXPosition = viewWidth
-                while (curXPosition >= 0) {
+                while (curXPosition >= VIEW_LEFT) {
                     startPoints.add(Pair(curXPosition, startYPosition))
                     val dashHorizontalOffset = calculateHorizontalOffset(dashAngle, dashWidth)
                     val spaceHorizontalOffset = calculateHorizontalOffset(dashAngle, spaceBetweenDashes)
@@ -252,7 +251,7 @@ class DashedView @JvmOverloads constructor(
 
         // Calculate start points
         val startPositions = mutableListOf<Pair<Float, Float>>()
-        val startXPosition = if (dashDirection is DashDirection.LeftToRight) 0f else viewWidth
+        val startXPosition = if (dashDirection is DashDirection.LeftToRight) VIEW_LEFT else viewWidth
 
         var curYPosition = viewHeight
         if (!dashDirection.isHorizontal) { // If lines will be drawn from the x axis, then skip drawing a line for the first y position which is equalt to the first x position
@@ -351,7 +350,7 @@ class DashedView @JvmOverloads constructor(
                     it.startPoint.first + (xTranslation * xTranslationModifier),
                     it.startPoint.second + yTranslation
                 ),
-                it.endPoint // Endpoint can remain unchanged for lines drawn from Y Axis. Their top corners wont show
+                it.endPoint // End point can remain unchanged for lines drawn from Y Axis. Their top corners wont show
             )
         }
     }

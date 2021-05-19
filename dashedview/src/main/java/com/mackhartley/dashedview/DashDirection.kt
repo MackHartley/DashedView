@@ -18,7 +18,6 @@ sealed class DashDirection(
     object Vertical : DashDirection(false)
 }
 
-
 // todo write unit test
 fun getDashDirection(dashAngle: Int): DashDirection {
     return when {
