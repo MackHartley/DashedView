@@ -13,6 +13,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
 
+//todo check that startPoint and endPoint all have same case
+// todo check all doc string descriptions
 //TOdo use VIEW_TOP and other helpers whereever it makes code more readable
 // Future improvement: Could limit max length of lines. For low dash angles such as 1 - 5 the lines are drawn quite far outside of the screen.
 // Todo consolidate as many math calls as possible for efficiency sake
@@ -226,9 +228,9 @@ class DashedView @JvmOverloads constructor(
 
         // Translate start and end points so all 4 corners of dash are drawn outside of the view
         val elongatedLineCoordinates = elongateDashesOriginatingFromXAxis( // todo refactor
-            dashAngle,
-            dashWidth,
-            lineCoordinates
+            initialPositions = lineCoordinates,
+            dashAngle = dashAngle,
+            dashWidth = dashWidth
         )
 
         return elongatedLineCoordinates
@@ -297,15 +299,14 @@ class DashedView @JvmOverloads constructor(
      * canvas
      */
     private fun elongateDashesOriginatingFromXAxis(
+        initialPositions: List<LineCoordinates>,
         dashAngle: Int,
-        dashWidth: Float,
-        initialPositions: List<LineCoordinates>
+        dashWidth: Float
     ): List<LineCoordinates> {
-        val hypotRadians = Math.toRadians((abs(90 - dashAngle).toDouble()))
-        val translationHypot = (dashWidth * tan((hypotRadians))) / 2
-        val xTranslation = translationHypot * sin(Math.toRadians((abs(90 - dashAngle).toDouble())))
-        val yTranslation = translationHypot * cos(Math.toRadians((abs(90 - dashAngle).toDouble())))
-        // todo change to use translation modifier
+        val hypotenuseRadians = Math.toRadians((abs(90 - dashAngle).toDouble()))
+        val translationHypotenuse = (dashWidth * tan((hypotenuseRadians))) / 2 // This is the amount the point must move
+        val xTranslation = translationHypotenuse * sin(Math.toRadians((abs(90 - dashAngle).toDouble())))
+        val yTranslation = translationHypotenuse * cos(Math.toRadians((abs(90 - dashAngle).toDouble())))
 
         return initialPositions.map {
             LineCoordinates(
@@ -360,17 +361,17 @@ class DashedView @JvmOverloads constructor(
         viewHeight: Float,
         viewWidth: Float
     ): Pair<Float, Float> {
-//        val maxLength = lineLength(Pair(0f, 0f), Pair(viewWidth, viewHeight))
         if (getDashDirection(dashAngle).isHorizontal) return Pair(viewWidth, startPoint.second)
 
-        val radians = Math.toRadians(dashAngle.toDouble())
-        val endXTrans = viewHeight / tan(radians).toFloat()
+        val dashAngleRadians = Math.toRadians(dashAngle.toDouble())
+        val endPointXTranslation = viewHeight / tan(dashAngleRadians).toFloat()
 
-        val endPoint = Pair(startPoint.first + endXTrans, endPointYValue)
+        val calculatedEndPoint = Pair(startPoint.first + endPointXTranslation, endPointYValue)
+
+//        val maxLength = lineLength(Pair(0f, 0f), Pair(viewWidth, viewHeight))
 //        val closestPossibleEndPoint = calculateClosest(endPoint, startPoint, maxLength) todo get working
-        return endPoint
 
-
+        return calculatedEndPoint
     }
 
 //    private fun calculateClosest(
@@ -410,18 +411,22 @@ class DashedView @JvmOverloads constructor(
      */
     private fun getXTranslationToConcealLineCorners(
         xTranslation: Double,
-        angle: Int,
-        isTop: Boolean
+        dashAngle: Int,
+        isEndPoint: Boolean
     ): Float {
-        val dashDirection = getDashDirection(angle)
-        val adjustedXTranslation: Double = when (dashDirection) {
+        // Modify the translation based on the angle at which dashes are drawn.
+        val modifiedXTranslation = when (getDashDirection(dashAngle)) {
             is DashDirection.LeftToRight -> xTranslation * -1
             is DashDirection.RightToLeft -> xTranslation
             is DashDirection.Vertical -> 0.0
         }
 
-        val z = if (isTop) adjustedXTranslation * -1 else adjustedXTranslation
-        return z.toFloat()
+        // One more modification required. Start points and end points need opposite x translations.
+        val finalModifiedXTranslation =
+            if (isEndPoint) modifiedXTranslation * -1
+            else modifiedXTranslation
+
+        return finalModifiedXTranslation.toFloat()
     }
 
     // todo write unit tests
