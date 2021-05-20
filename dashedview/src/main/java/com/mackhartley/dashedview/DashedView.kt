@@ -14,11 +14,11 @@ import kotlin.math.sin
 import kotlin.math.tan
 
 // todo need to be able to set dash color interface
-// todo can mention the library is efficienct. Dashes computed with minimal sin, cos, tan calls
 // todo decide between dash and line language
 // todo check all doc string descriptions
-// todo improvement: Could limit max length of lines. For low dash angles such as 1 - 5 the lines are drawn quite far outside of the screen.
 
+// readme
+// todo can mention the library is efficienct. Dashes computed with minimal sin, cos, tan calls
 // Make git project:
 // Todo would be nice to be able to set an outline stroke with a custom width and color
 
@@ -372,15 +372,10 @@ class DashedView @JvmOverloads constructor(
         endPointYValue: Float,
         viewWidth: Float
     ): Pair<Float, Float> {
-        if (getDashDirection(dashAngle).isHorizontal)
-            return Pair(viewWidth, startPoint.second)
-
-        val calculatedEndPoint = Pair(startPoint.first + endPointXTranslation, endPointYValue)
-
-//        val maxLength = lineLength(Pair(0f, 0f), Pair(viewWidth, viewHeight))
-//        val closestPossibleEndPoint = calculateClosest(endPoint, startPoint, maxLength) todo get working
-
-        return calculatedEndPoint
+        return if (getDashDirection(dashAngle).isHorizontal)
+            Pair(viewWidth, startPoint.second)
+        else
+            Pair(startPoint.first + endPointXTranslation, endPointYValue)
     }
 
     private fun calculateEndPointXTranslation(
@@ -391,30 +386,6 @@ class DashedView @JvmOverloads constructor(
         val endPointXTranslation = viewHeight / tan(dashAngleRadians)
         return endPointXTranslation.toFloat()
     }
-
-//    private fun calculateClosest(
-//        endPoint: Pair<Float, Float>,
-//        startPoint: Pair<Float, Float>,
-//        maxLen: Float
-//    ): Pair<Float, Float> {
-//        val pointDist = lineLength(startPoint, endPoint)
-//        if (pointDist > maxLen) {
-//            val reductionRatio = maxLen / pointDist
-//
-//            val xDiff
-//            return Pair(
-//                endPoint.first * reductionRatio,
-//                endPoint.second * reductionRatio
-//            )
-//        }
-//        return endPoint
-//    }
-//
-//    private fun lineLength(start: Pair<Float, Float>, end: Pair<Float, Float>): Float {
-//        val xDiff = abs(start.first - end.first)
-//        val yDiff = abs(start.second - end.second)
-//        return sqrt(xDiff.toDouble().pow(2.0) + yDiff.toDouble().pow(2.0)).toFloat()
-//    }
 
     /**
      * Gets the x translation required to sufficiently cover the corners of a line. Essentially this
@@ -462,4 +433,31 @@ class DashedView @JvmOverloads constructor(
         lastWidth = w
         lastHeight = h
     }
+
+// Todo if performance is ever an issue for low values, investigate limiting line length.
+//      For low dash angles such as 1 - 5 the lines are drawn quite far outside of the screen.
+
+//    private fun calculateClosest(
+//        endPoint: Pair<Float, Float>,
+//        startPoint: Pair<Float, Float>,
+//        maxLen: Float
+//    ): Pair<Float, Float> {
+//        val pointDist = lineLength(startPoint, endPoint)
+//        if (pointDist > maxLen) {
+//            val reductionRatio = maxLen / pointDist
+//
+//            val xDiff
+//            return Pair(
+//                endPoint.first * reductionRatio,
+//                endPoint.second * reductionRatio
+//            )
+//        }
+//        return endPoint
+//    }
+//
+//    private fun lineLength(start: Pair<Float, Float>, end: Pair<Float, Float>): Float {
+//        val xDiff = abs(start.first - end.first)
+//        val yDiff = abs(start.second - end.second)
+//        return sqrt(xDiff.toDouble().pow(2.0) + yDiff.toDouble().pow(2.0)).toFloat()
+//    }
 }
