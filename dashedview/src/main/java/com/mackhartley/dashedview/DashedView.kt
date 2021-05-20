@@ -13,15 +13,11 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
 
-// Todo consolidate as many math calls as possible for efficiency sake
-// todo test performance
-
 // todo need to be able to set dash color interface
-
+// todo can mention the library is efficienct. Dashes computed with minimal sin, cos, tan calls
+// todo decide between dash and line language
 // todo check all doc string descriptions
 // todo improvement: Could limit max length of lines. For low dash angles such as 1 - 5 the lines are drawn quite far outside of the screen.
-
-
 
 // Make git project:
 // Todo would be nice to be able to set an outline stroke with a custom width and color
@@ -85,7 +81,7 @@ class DashedView @JvmOverloads constructor(
     companion object {
         const val DEFAULT_WIDTH = 4f
         const val DEFAULT_SPACE_BETWEEN_DASHES = 4f
-        const val DEFAULT_DASH_ANGLE = 45 // Measured in degrees. Min 0, max 179
+        const val DEFAULT_DASH_ANGLE = 45 // Measured in degrees. Min 0, max 179. A value of 0 Degrees points to the right side of the view
         const val DEFAULT_CORNER_RADIUS = 0f
         const val DEFAULT_DASH_COLOR = Color.GRAY
 
@@ -157,6 +153,7 @@ class DashedView @JvmOverloads constructor(
                 val endPoint = curCoords.endPoint
 
                 if (index % 3 == 0) {
+//                    val paintColor = paintColorChooser.getPaintColor(index, allLinesToDraw.size)
                     canvas.drawLine(startPoint.first, startPoint.second, endPoint.first, endPoint.second, dashPaint)
                 } else if (index % 3 == 1) {
                     canvas.drawLine(startPoint.first, startPoint.second, endPoint.first, endPoint.second, dashPaint2)
@@ -169,6 +166,20 @@ class DashedView @JvmOverloads constructor(
 
         }
     }
+
+//    var paintColorChooser = object : Thingy {
+//        override fun getPaintColor(curIndex: Int, numDashes: Int): Paint {
+//            return dashPaint
+//        }
+//    }
+//
+//    interface Thingy {
+//        fun getPaintColor(curIndex: Int, numDashes: Int): Paint
+//    }
+//
+//    private fun getDashColor(): Paint {
+//        TODO("Not yet implemented")
+//    }
 
     // todo write unit tests
     private fun getLinesOriginatingFromXAxis(
@@ -186,6 +197,8 @@ class DashedView @JvmOverloads constructor(
         // Calculate start points
         val startPoints = mutableListOf<Pair<Float, Float>>()
         val startYPosition = viewHeight
+        val dashHorizontalOffset = calculateHorizontalOffset(dashAngle, dashWidth)
+        val spaceHorizontalOffset = calculateHorizontalOffset(dashAngle, spaceBetweenDashes)
 
         var curXPosition: Float
         when (dashDirection) {
@@ -194,8 +207,6 @@ class DashedView @JvmOverloads constructor(
                 curXPosition = VIEW_LEFT
                 while (curXPosition <= viewWidth) {
                     startPoints.add(Pair(curXPosition, startYPosition))
-                    val dashHorizontalOffset = calculateHorizontalOffset(dashAngle, dashWidth)
-                    val spaceHorizontalOffset = calculateHorizontalOffset(dashAngle, spaceBetweenDashes)
                     curXPosition += abs(dashHorizontalOffset + spaceHorizontalOffset)
                 }
             }
@@ -203,8 +214,6 @@ class DashedView @JvmOverloads constructor(
                 curXPosition = viewWidth
                 while (curXPosition >= VIEW_LEFT) {
                     startPoints.add(Pair(curXPosition, startYPosition))
-                    val dashHorizontalOffset = calculateHorizontalOffset(dashAngle, dashWidth)
-                    val spaceHorizontalOffset = calculateHorizontalOffset(dashAngle, spaceBetweenDashes)
                     curXPosition -= abs(dashHorizontalOffset + spaceHorizontalOffset)
                 }
             }
@@ -213,16 +222,17 @@ class DashedView @JvmOverloads constructor(
 
         // Calculate translation required to generate end point for a given start point
         // Apply translation to list of start points to get line coordinates for dashes
+        val endPointXTranslation = calculateEndPointXTranslation(dashAngle, viewHeight)
         val lineCoordinates = startPoints.map {
             LineCoordinates(
                 startPoint = it,
                 endPoint =
-                    calculateEndPoint(
+                    generateEndPoint(
                         startPoint = it,
                         dashAngle = dashAngle,
+                        endPointXTranslation = endPointXTranslation,
                         endPointYValue = VIEW_TOP,
-                        viewHeight = viewHeight,
-                        viewWidth =viewWidth
+                        viewWidth = viewWidth
                     )
             )
         }
@@ -254,14 +264,13 @@ class DashedView @JvmOverloads constructor(
         val startXPosition = if (dashDirection is DashDirection.LeftToRight) VIEW_LEFT else viewWidth
 
         var curYPosition = viewHeight
+
+        val dashVerticalOffset = calculateVerticalOffset(dashAngle, dashWidth)
+        val spaceVerticalOffset = calculateVerticalOffset(dashAngle, spaceBetweenDashes)
         if (!dashDirection.isHorizontal) { // If lines will be drawn from the x axis, then skip drawing a line for the first y position which is equalt to the first x position
-            val dashVerticalOffset = calculateVerticalOffset(dashAngle, dashWidth)
-            val spaceVerticalOffset = calculateVerticalOffset(dashAngle, spaceBetweenDashes)
             curYPosition -= abs(dashVerticalOffset + spaceVerticalOffset)
         }
         while (curYPosition >= VIEW_TOP) {
-            val dashVerticalOffset = calculateVerticalOffset(dashAngle, dashWidth)
-            val spaceVerticalOffset = calculateVerticalOffset(dashAngle, spaceBetweenDashes)
             startPositions.add(Pair(startXPosition, curYPosition))
             curYPosition -= abs(dashVerticalOffset + spaceVerticalOffset)
         }
@@ -269,17 +278,18 @@ class DashedView @JvmOverloads constructor(
 
         // Calculate translation required to generate end point for a given start point
         // Apply translation to list of start points to get line coordinates for dashes
+        val transition = calculateEndPointXTranslation(dashAngle, viewHeight)
         val lineCoordinates = startPositions.map {
             LineCoordinates(
                 startPoint = Pair(
                     it.first,
                     it.second
                 ),
-                endPoint = calculateEndPoint(
+                endPoint = generateEndPoint(
                     startPoint = it,
                     dashAngle = dashAngle,
+                    endPointXTranslation = transition,
                     endPointYValue = it.second - viewHeight,// Subtract view height because each of these lines has a different start point Y value
-                    viewHeight = viewHeight,
                     viewWidth = viewWidth
                 )
             )
@@ -355,17 +365,15 @@ class DashedView @JvmOverloads constructor(
         }
     }
 
-    private fun calculateEndPoint(
+    private fun generateEndPoint(
         startPoint: Pair<Float, Float>,
         dashAngle: Int,
+        endPointXTranslation: Float,
         endPointYValue: Float,
-        viewHeight: Float,
         viewWidth: Float
     ): Pair<Float, Float> {
-        if (getDashDirection(dashAngle).isHorizontal) return Pair(viewWidth, startPoint.second)
-
-        val dashAngleRadians = Math.toRadians(dashAngle.toDouble())
-        val endPointXTranslation = viewHeight / tan(dashAngleRadians).toFloat()
+        if (getDashDirection(dashAngle).isHorizontal)
+            return Pair(viewWidth, startPoint.second)
 
         val calculatedEndPoint = Pair(startPoint.first + endPointXTranslation, endPointYValue)
 
@@ -373,6 +381,15 @@ class DashedView @JvmOverloads constructor(
 //        val closestPossibleEndPoint = calculateClosest(endPoint, startPoint, maxLength) todo get working
 
         return calculatedEndPoint
+    }
+
+    private fun calculateEndPointXTranslation(
+        dashAngle: Int,
+        viewHeight: Float
+    ): Float {
+        val dashAngleRadians = Math.toRadians(dashAngle.toDouble())
+        val endPointXTranslation = viewHeight / tan(dashAngleRadians)
+        return endPointXTranslation.toFloat()
     }
 
 //    private fun calculateClosest(
