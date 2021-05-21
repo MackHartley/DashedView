@@ -39,6 +39,17 @@ class DashedView @JvmOverloads constructor(
     private var lastWidth = width // Used for keeping track of view size
     private var lastHeight = height // Used for keeping track of view size
 
+    private val dashPaint by lazy {
+        Paint().apply {
+            strokeCap = Paint.Cap.BUTT
+            color = dashColor
+            strokeWidth = dashWidth
+            isAntiAlias = true
+        }
+    }
+
+    private var dashColorGenerator: DashColorGenerator? = null
+
     private val roundedCornersClipPath by lazy { // This path is used to clip the progress background and drawable to the desired corner radius
         Path().apply {
             addRoundRect(
@@ -49,32 +60,6 @@ class DashedView @JvmOverloads constructor(
                 floatArrayOf(cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius, cornerRadius),
                 Path.Direction.CW
             )
-        }
-    }
-
-    private val dashPaint by lazy {
-        Paint().apply {
-            strokeCap = Paint.Cap.BUTT
-            color = dashColor
-            strokeWidth = dashWidth
-            isAntiAlias = true
-        }
-    }
-
-    private val dashPaint2 by lazy {
-        Paint().apply {
-            strokeCap = Paint.Cap.BUTT
-            color = Color.GREEN
-            strokeWidth = dashWidth
-            isAntiAlias = true
-        }
-    }
-    private val dashPaint3 by lazy {
-        Paint().apply {
-            strokeCap = Paint.Cap.BUTT
-            color = Color.BLUE
-            strokeWidth = dashWidth
-            isAntiAlias = true
         }
     }
 
@@ -148,38 +133,25 @@ class DashedView @JvmOverloads constructor(
                 }
 
             // Loop through coordinate list and draw lines
-            for ((index, curCoords) in allLinesToDraw.withIndex()) {
-                val startPoint = curCoords.startPoint
-                val endPoint = curCoords.endPoint
+            for ((index, lineCoordinates) in allLinesToDraw.withIndex()) {
+                val startPoint = lineCoordinates.startPoint
+                val endPoint = lineCoordinates.endPoint
+                updatePaintColorIfNeeded(dashColorGenerator, index, allLinesToDraw.size)
 
-                if (index % 3 == 0) {
-//                    val paintColor = paintColorChooser.getPaintColor(index, allLinesToDraw.size)
-                    canvas.drawLine(startPoint.first, startPoint.second, endPoint.first, endPoint.second, dashPaint)
-                } else if (index % 3 == 1) {
-                    canvas.drawLine(startPoint.first, startPoint.second, endPoint.first, endPoint.second, dashPaint2)
-                } else {
-                    canvas.drawLine(startPoint.first, startPoint.second, endPoint.first, endPoint.second, dashPaint3)
-                }
+                canvas.drawLine(startPoint.first, startPoint.second, endPoint.first, endPoint.second, dashPaint)
             }
-
-
-
         }
     }
 
-//    var paintColorChooser = object : Thingy {
-//        override fun getPaintColor(curIndex: Int, numDashes: Int): Paint {
-//            return dashPaint
-//        }
-//    }
-//
-//    interface Thingy {
-//        fun getPaintColor(curIndex: Int, numDashes: Int): Paint
-//    }
-//
-//    private fun getDashColor(): Paint {
-//        TODO("Not yet implemented")
-//    }
+    private fun updatePaintColorIfNeeded(
+        dashColorGenerator: DashColorGenerator?,
+        index: Int,
+        numDashes: Int
+    ) {
+        if (dashColorGenerator != null) {
+            dashPaint.color = dashColorGenerator.getPaintColor(index, numDashes)
+        }
+    }
 
     // todo write unit tests
     private fun getLinesOriginatingFromXAxis(
@@ -434,30 +406,7 @@ class DashedView @JvmOverloads constructor(
         lastHeight = h
     }
 
-// Todo if performance is ever an issue for low values, investigate limiting line length.
-//      For low dash angles such as 1 - 5 the lines are drawn quite far outside of the screen.
-
-//    private fun calculateClosest(
-//        endPoint: Pair<Float, Float>,
-//        startPoint: Pair<Float, Float>,
-//        maxLen: Float
-//    ): Pair<Float, Float> {
-//        val pointDist = lineLength(startPoint, endPoint)
-//        if (pointDist > maxLen) {
-//            val reductionRatio = maxLen / pointDist
-//
-//            val xDiff
-//            return Pair(
-//                endPoint.first * reductionRatio,
-//                endPoint.second * reductionRatio
-//            )
-//        }
-//        return endPoint
-//    }
-//
-//    private fun lineLength(start: Pair<Float, Float>, end: Pair<Float, Float>): Float {
-//        val xDiff = abs(start.first - end.first)
-//        val yDiff = abs(start.second - end.second)
-//        return sqrt(xDiff.toDouble().pow(2.0) + yDiff.toDouble().pow(2.0)).toFloat()
-//    }
+    fun setDashColorGenerator(newDashColorGenerator: DashColorGenerator) {
+        dashColorGenerator = newDashColorGenerator
+    }
 }

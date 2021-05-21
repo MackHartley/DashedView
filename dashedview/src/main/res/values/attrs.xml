@@ -4,7 +4,7 @@
         <attr name="dashWidth" format="dimension" />
         <attr name="spaceBetweenDashes" format="dimension" />
         <attr name="dashColor" format="color|reference" />
-        <attr name="cornerRadius" format="dimension" />
         <attr name="dashAngle" format="integer" />
+        <attr name="cornerRadius" format="dimension" />
     </declare-styleable>
 </resources>
