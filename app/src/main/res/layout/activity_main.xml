@@ -1,23 +1,287 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:forceDarkAllowed="false"
     tools:context=".MainActivity">
 
-    <com.mackhartley.dashedview.DashedView
-        android:id="@+id/dashedview"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        app:cornerRadius="400dp"
-        app:dashAngle="0"
-        app:dashColor="#f0f"
-        app:dashWidth="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:spaceBetweenDashes="20dp" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="48dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/header_txt_1"
+            style="@style/Header"
+            android:text="View State Indicator Example"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/goal_state_indicator"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_goal_state_indicator"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_txt_1">
+
+            <TextView
+                android:id="@+id/goal_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:text="Goal Status"
+                android:textColor="@color/goal_color"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.mackhartley.dashedview.DashedView
+                android:id="@+id/goal_dashed_view"
+                android:layout_width="0dp"
+                android:layout_height="26dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/bg_goal_outline"
+                app:cornerRadius="4dp"
+                app:dashColor="@color/goal_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/goal_title" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_goal_missed"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:text="Missed"
+                android:textColor="@color/goal_color"
+                app:layout_constraintBottom_toBottomOf="@id/goal_dashed_view"
+                app:layout_constraintEnd_toEndOf="@id/goal_dashed_view"
+                app:layout_constraintStart_toStartOf="@id/goal_dashed_view"
+                app:layout_constraintTop_toTopOf="@id/goal_dashed_view" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/header_txt_2"
+            style="@style/Header"
+            android:text="Disabled Button Example"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/goal_state_indicator" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn1"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:text="start"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_txt_2"
+            app:strokeColor="@color/purple_500" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn2"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn1"
+            app:strokeColor="@color/purple_500" />
+
+        <com.mackhartley.dashedview.DashedView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="7dp"
+            android:elevation="4dp"
+            app:cornerRadius="3dp"
+            app:dashColor="@color/purple_200"
+            app:dashWidth="6dp"
+            app:layout_constraintBottom_toBottomOf="@id/btn2"
+            app:layout_constraintEnd_toEndOf="@id/btn2"
+            app:layout_constraintStart_toStartOf="@id/btn2"
+            app:layout_constraintTop_toTopOf="@id/btn2"
+            app:spaceBetweenDashes="6dp" />
+
+        <TextView
+            android:id="@+id/header_txt_3"
+            style="@style/Header"
+            android:text="Disabled View Example"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn2" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card1"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_txt_3"
+            app:strokeColor="@color/material_on_background_disabled"
+            app:strokeWidth="1dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/card_txt_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Your Reward"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/ic_baseline_card_giftcard_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/card_txt_1"
+                    app:tint="@color/card_color" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/card2"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card1"
+            app:strokeColor="@color/material_on_background_disabled"
+            app:strokeWidth="1dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/card_txt_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/white"
+                    android:elevation="2dp"
+                    android:paddingStart="4dp"
+                    android:paddingEnd="4dp"
+                    android:text="Your Reward (Expired)"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="150dp"
+                    android:src="@drawable/ic_baseline_card_giftcard_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/card_txt_2"
+                    app:tint="@color/card_color" />
+
+                <com.mackhartley.dashedview.DashedView
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:elevation="1dp"
+                    app:cornerRadius="4dp"
+                    app:dashColor="@color/card_color"
+                    app:dashWidth="4dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:spaceBetweenDashes="16dp" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/header_txt_4"
+            style="@style/Header"
+            android:text="Miscellaneous Examples"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/card2" />
+
+        <com.mackhartley.dashedview.DashedView
+            android:id="@+id/misc4"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_marginTop="12dp"
+            app:dashAngle="135"
+            app:dashColor="@color/design_default_color_secondary"
+            app:dashWidth="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_txt_4"
+            app:spaceBetweenDashes="8dp" />
+
+        <com.mackhartley.dashedview.DashedView
+            android:id="@+id/misc_example_1"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="24dp"
+            app:dashAngle="90"
+            app:dashColor="#000"
+            app:dashWidth="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/misc4"
+            app:spaceBetweenDashes="30dp" />
+
+        <com.mackhartley.dashedview.DashedView
+            android:id="@+id/misc_example_2"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="24dp"
+            app:cornerRadius="400dp"
+            app:dashAngle="0"
+            app:dashColor="#f0f"
+            app:dashWidth="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/misc_example_1"
+            app:spaceBetweenDashes="20dp" />
+
+        <com.mackhartley.dashedview.DashedView
+            android:id="@+id/misc_example_3"
+            android:layout_width="175dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="24dp"
+            app:cornerRadius="12dp"
+            app:dashAngle="60"
+            app:dashWidth="37dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/misc_example_2"
+            app:spaceBetweenDashes="37dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

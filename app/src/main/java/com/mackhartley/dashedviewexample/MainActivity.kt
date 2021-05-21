@@ -1,5 +1,6 @@
 package com.mackhartley.dashedviewexample
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -11,26 +12,33 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val dashedView = findViewById<DashedView>(R.id.dashedview)
-        dashedView.setDashColorGenerator(
+        val misc2 = findViewById<DashedView>(R.id.misc_example_2)
+        misc2.setDashColorGenerator(
+            object : DashColorGenerator {
+                override fun getPaintColor(curIndex: Int, numDashes: Int): Int {
+                    val alphaValue = 255 * ((curIndex + 1).toFloat() / (numDashes + 1).toFloat())
+                    val gradientAppliedColor = Color.argb(alphaValue.toInt(), 255, 0, 255)
+                    return gradientAppliedColor
+                }
+
+            }
+        )
+
+        val misc3 = findViewById<DashedView>(R.id.misc_example_3)
+        misc3.setDashColorGenerator(
             object : DashColorGenerator {
                 override fun getPaintColor(curIndex: Int, numDashes: Int): Int {
                     return when {
-                        curIndex % 3 == 0 -> ContextCompat.getColor(
+                        curIndex % 2 == 0 -> ContextCompat.getColor(
                             this@MainActivity.applicationContext,
-                            R.color.design_default_color_error
-                        )
-                        curIndex % 3 == 1 -> ContextCompat.getColor(
-                            this@MainActivity.applicationContext,
-                            R.color.design_default_color_secondary
+                            R.color.barber1
                         )
                         else -> ContextCompat.getColor(
                             this@MainActivity.applicationContext,
-                            R.color.design_default_color_primary
+                            R.color.barber2
                         )
                     }
                 }
-
             }
         )
     }

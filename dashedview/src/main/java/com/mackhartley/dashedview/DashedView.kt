@@ -13,7 +13,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
 
-// todo need to be able to set dash color interface
 // todo decide between dash and line language
 // todo check all doc string descriptions
 
@@ -64,8 +63,8 @@ class DashedView @JvmOverloads constructor(
     }
 
     companion object {
-        const val DEFAULT_WIDTH = 4f
-        const val DEFAULT_SPACE_BETWEEN_DASHES = 4f
+        const val DEFAULT_WIDTH = 12f
+        const val DEFAULT_SPACE_BETWEEN_DASHES = 12f
         const val DEFAULT_DASH_ANGLE = 45 // Measured in degrees. Min 0, max 179. A value of 0 Degrees points to the right side of the view
         const val DEFAULT_CORNER_RADIUS = 0f
         const val DEFAULT_DASH_COLOR = Color.GRAY
