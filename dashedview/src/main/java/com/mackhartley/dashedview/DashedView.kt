@@ -361,59 +361,6 @@ class DashedView @JvmOverloads constructor(
             Pair(startPoint.first + endPointXTranslation, endPointYValue)
     }
 
-    /**
-     * Calculates the X axis translation required to get the end point for any start point.
-     */
-    private fun calculateEndPointXTranslation(
-        dashAngle: Int,
-        viewHeight: Float
-    ): Float {
-        val dashAngleRadians = Math.toRadians(dashAngle.toDouble())
-        val endPointXTranslation = viewHeight / tan(dashAngleRadians)
-        return endPointXTranslation.toFloat()
-    }
-
-    /**
-     * Modifies a provided [xTranslation] value so it can be properly applied to a start point or
-     * end point based on the current dash angle.
-     */
-    private fun calculateModifiedXTranslation(
-        xTranslation: Double,
-        dashAngle: Int,
-        isEndPoint: Boolean
-    ): Float {
-        // Modify the translation based on the angle at which dashes are drawn.
-        val modifiedXTranslation = when (getDashDirection(dashAngle)) {
-            is DashDirection.LeftToRight -> xTranslation * -1
-            is DashDirection.RightToLeft -> xTranslation
-            is DashDirection.Vertical -> 0.0
-        }
-
-        // One more modification required. Start points and end points need opposite x translations.
-        val finalModifiedXTranslation =
-            if (isEndPoint) modifiedXTranslation * -1
-            else modifiedXTranslation
-
-        return finalModifiedXTranslation.toFloat()
-    }
-
-    /**
-     * Calculates how much horizontal space should be between two dashes.
-     */
-    private fun calculateHorizontalOffset(angle: Int, width: Float): Float {
-        val radians = Math.toRadians((90 - angle).toDouble())
-        return width / (cos(radians)).toFloat()
-    }
-
-    /**
-     * Calculates how much vertical space should be between two dashes.
-     */
-    private fun calculateVerticalOffset(angle: Int, width: Float): Float {
-        val complementaryAngle = Math.toRadians(abs(90 - angle).toDouble())
-        val halfVerticalLengthDashCrossSection = width / (2 * sin(complementaryAngle))
-        return halfVerticalLengthDashCrossSection.toFloat() * 2f
-    }
-
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         lastWidth = w
         lastHeight = h
