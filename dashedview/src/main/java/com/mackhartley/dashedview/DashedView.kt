@@ -36,6 +36,7 @@ class DashedView @JvmOverloads constructor(
     private var dashAngle = DEFAULT_DASH_ANGLE
     private var cornerRadius = DEFAULT_CORNER_RADIUS
     @ColorInt private var dashColor = DEFAULT_DASH_COLOR
+    private var dashColorGenerator: DashColorGenerator? = null
 
     private var lastWidth = width // Used for keeping track of view size
     private var lastHeight = height // Used for keeping track of view size
@@ -48,8 +49,6 @@ class DashedView @JvmOverloads constructor(
             isAntiAlias = true
         }
     }
-
-    private var dashColorGenerator: DashColorGenerator? = null
 
     private val roundedCornersClipPath by lazy { // This path is used to clip the progress background and drawable to the desired corner radius
         Path().apply {
@@ -70,7 +69,6 @@ class DashedView @JvmOverloads constructor(
         const val DEFAULT_DASH_ANGLE = 45 // Measured in degrees. Min 0, max 179. A value of 0 Degrees points to the right side of the view
         const val DEFAULT_CORNER_RADIUS = 0f
         const val DEFAULT_DASH_COLOR = Color.GRAY
-
         const val VIEW_LEFT = 0f
         const val VIEW_TOP = 0f
     }
@@ -91,7 +89,7 @@ class DashedView @JvmOverloads constructor(
     }
 
     /**
-     * DashedView only allows angles between 0 and 179 inclusive. Values outside of that range will
+     * [DashedView] only allows angles between 0 and 179 inclusive. Values outside of that range will
      * have a modulus operation applied to them.
      */
     private fun parseRequestedDashAngle(requestedAngle: Int): Int {
@@ -154,7 +152,9 @@ class DashedView @JvmOverloads constructor(
         }
     }
 
-    // todo write unit tests
+    /**
+     * Generates dashes with start points originating from the X axis.
+     */
     private fun getDashesOriginatingFromXAxis(
         dashWidth: Float,
         spaceBetweenDashes: Float,
@@ -220,6 +220,9 @@ class DashedView @JvmOverloads constructor(
         return elongatedDashCoordinates
     }
 
+    /**
+     * Generates dashes with start points originating on the Y axis.
+     */
     private fun getDashesOriginatingFromYAxis(
         dashWidth: Float,
         spaceBetweenDashes: Float,
@@ -279,8 +282,11 @@ class DashedView @JvmOverloads constructor(
     }
 
     /**
-     * Elongate the dashes enough so that all 4 corners of each dash are extended out of the view
-     * canvas
+     * Elongate dashes enough so that all 4 corners of each dash are extended out of the view
+     * canvas. This ensures the corners of the dashes/lines are not visible. This is more important
+     * when dashes get thicker and resemble rectangles instead of dashes/lines.
+     *
+     * Affects Dashes that originate from the X axis.
      */
     private fun elongateDashesOriginatingFromXAxis(
         initialPositions: List<DashInfo>,
@@ -307,8 +313,11 @@ class DashedView @JvmOverloads constructor(
     }
 
     /**
-     * Elongate the dashes enough so that all 4 corners of each dash are extended out of the view
-     * canvas
+     * Elongate dashes enough so that all 4 corners of each dash are extended out of the view
+     * canvas. This ensures the corners of the dashes/lines are not visible. This is more important
+     * when dashes get thicker and resemble rectangles instead of dashes/lines.
+     *
+     * Affects Dashes that originate from the Y axis.
      */
     private fun elongateDashesOriginatingFromYAxis(
         initialPositions: List<DashInfo>,
@@ -338,6 +347,9 @@ class DashedView @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Generates the endpoint for a given start point based on the provided constraints.
+     */
     private fun generateEndPoint(
         startPoint: Pair<Float, Float>,
         dashAngle: Int,
@@ -351,6 +363,9 @@ class DashedView @JvmOverloads constructor(
             Pair(startPoint.first + endPointXTranslation, endPointYValue)
     }
 
+    /**
+     * Calculates the X axis translation required to get the end point for any start point.
+     */
     private fun calculateEndPointXTranslation(
         dashAngle: Int,
         viewHeight: Float
@@ -361,9 +376,8 @@ class DashedView @JvmOverloads constructor(
     }
 
     /**
-     * Gets the x translation required to sufficiently cover the corners of a dash. Essentially this
-     * function give info on how far a dash should be extended so it doesn't show it's corners. This
-     * is more important when dashes get thicker and resemble rectangles instead of dashes/lines
+     * Modifies a provided [xTranslation] value so it can be properly applied to a start point or
+     * end point based on the current dash angle.
      */
     private fun calculateModifiedXTranslation(
         xTranslation: Double,
@@ -385,17 +399,17 @@ class DashedView @JvmOverloads constructor(
         return finalModifiedXTranslation.toFloat()
     }
 
-    // todo write unit tests
     /**
-     * Because the dashes can be drawn at an angle, the distance from one dash to the next should
-     * actually be calculated using the hypotenuse. This method calculates that distance for
-     * dashes and the spaces between dashes.
+     * Calculates how much horizontal space should be between two dashes.
      */
     private fun calculateHorizontalOffset(angle: Int, width: Float): Float {
         val radians = Math.toRadians((90 - angle).toDouble())
         return width / (cos(radians)).toFloat()
     }
 
+    /**
+     * Calculates how much vertical space should be between two dashes.
+     */
     private fun calculateVerticalOffset(angle: Int, width: Float): Float {
         val complementaryAngle = Math.toRadians(abs(90 - angle).toDouble())
         val halfVerticalLengthDashCrossSection = width / (2 * sin(complementaryAngle))
