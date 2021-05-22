@@ -13,15 +13,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
 
-//todo unit tests
-//todo readme
-
-// readme
-// todo can mention the library is efficienct. Dashes computed with minimal sin, cos, tan calls
-// Make git project:
-// Todo would be nice to be able to set an outline stroke with a custom width and color
-
-
 class DashedView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
