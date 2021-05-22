@@ -230,20 +230,34 @@
             app:layout_constraintTop_toBottomOf="@id/card2" />
 
         <com.mackhartley.dashedview.DashedView
-            android:id="@+id/misc4"
+            android:id="@+id/misc_example_1"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            app:cornerRadius="400dp"
+            app:dashAngle="0"
+            app:dashColor="#f0f"
+            app:dashWidth="20dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_txt_4"
+            app:spaceBetweenDashes="20dp" />
+
+        <com.mackhartley.dashedview.DashedView
+            android:id="@+id/misc_example_2"
             android:layout_width="250dp"
             android:layout_height="250dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="24dp"
             app:dashAngle="135"
             app:dashColor="@color/design_default_color_secondary"
             app:dashWidth="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_txt_4"
+            app:layout_constraintTop_toBottomOf="@id/misc_example_1"
             app:spaceBetweenDashes="8dp" />
 
         <com.mackhartley.dashedview.DashedView
-            android:id="@+id/misc_example_1"
+            android:id="@+id/misc_example_3"
             android:layout_width="200dp"
             android:layout_height="100dp"
             android:layout_marginTop="24dp"
@@ -252,25 +266,11 @@
             app:dashWidth="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/misc4"
+            app:layout_constraintTop_toBottomOf="@id/misc_example_2"
             app:spaceBetweenDashes="30dp" />
 
         <com.mackhartley.dashedview.DashedView
-            android:id="@+id/misc_example_2"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_marginTop="24dp"
-            app:cornerRadius="400dp"
-            app:dashAngle="0"
-            app:dashColor="#f0f"
-            app:dashWidth="20dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/misc_example_1"
-            app:spaceBetweenDashes="20dp" />
-
-        <com.mackhartley.dashedview.DashedView
-            android:id="@+id/misc_example_3"
+            android:id="@+id/misc_example_4"
             android:layout_width="175dp"
             android:layout_height="300dp"
             android:layout_marginTop="24dp"
@@ -279,7 +279,7 @@
             app:dashWidth="37dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/misc_example_2"
+            app:layout_constraintTop_toBottomOf="@id/misc_example_3"
             app:spaceBetweenDashes="37dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

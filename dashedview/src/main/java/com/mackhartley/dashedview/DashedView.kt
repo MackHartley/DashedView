@@ -13,8 +13,10 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
 
-// todo decide between dash and line language
 // todo check all doc string descriptions
+//todo update attr names
+//todo unit tests
+//todo readme
 
 // readme
 // todo can mention the library is efficienct. Dashes computed with minimal sin, cos, tan calls
@@ -107,15 +109,15 @@ class DashedView @JvmOverloads constructor(
             // Apply the requested rounded corner value
             canvas.clipPath(roundedCornersClipPath)
 
-            // Get list of coordinates for lines that need to be drawn
-            val linesOriginatingFromXAxis = getLinesOriginatingFromXAxis(
+            // Get list of coordinates for dashes that need to be drawn
+            val dashesOriginatingFromXAxis = getDashesOriginatingFromXAxis(
                 dashWidth = dashWidth,
                 spaceBetweenDashes = spaceBetweenDashes,
                 dashAngle = dashAngle,
                 viewWidth = width.toFloat(),
                 viewHeight = height.toFloat()
             )
-            val linesOriginatingFromYAxis = getLinesOriginatingFromYAxis(
+            val dashesOriginatingFromYAxis = getDashesOriginatingFromYAxis(
                 dashWidth = dashWidth,
                 spaceBetweenDashes = spaceBetweenDashes,
                 dashAngle = dashAngle,
@@ -123,19 +125,19 @@ class DashedView @JvmOverloads constructor(
                 viewHeight = height.toFloat()
             )
             val dashDirection = getDashDirection(dashAngle)
-            val allLinesToDraw =
-                if (dashDirection.isHorizontal) linesOriginatingFromYAxis // If horizontal, only draw lines originating from Y axis
+            val allDashesToDraw =
+                if (dashDirection.isHorizontal) dashesOriginatingFromYAxis // If horizontal, only draw dashes originating from Y axis
                 else when (dashDirection) {
-                    is DashDirection.LeftToRight -> linesOriginatingFromYAxis.reversed() + linesOriginatingFromXAxis
-                    is DashDirection.RightToLeft -> linesOriginatingFromXAxis.reversed() + linesOriginatingFromYAxis
-                    is DashDirection.Vertical -> linesOriginatingFromXAxis // If vertical, only draw lines originating from X axis
+                    is DashDirection.LeftToRight -> dashesOriginatingFromYAxis.reversed() + dashesOriginatingFromXAxis
+                    is DashDirection.RightToLeft -> dashesOriginatingFromXAxis.reversed() + dashesOriginatingFromYAxis
+                    is DashDirection.Vertical -> dashesOriginatingFromXAxis // If vertical, only draw dashes originating from X axis
                 }
 
-            // Loop through coordinate list and draw lines
-            for ((index, lineCoordinates) in allLinesToDraw.withIndex()) {
-                val startPoint = lineCoordinates.startPoint
-                val endPoint = lineCoordinates.endPoint
-                updatePaintColorIfNeeded(dashColorGenerator, index, allLinesToDraw.size)
+            // Loop through coordinate list and draw dashes
+            for ((index, dashCoordinates) in allDashesToDraw.withIndex()) {
+                val startPoint = dashCoordinates.startPoint
+                val endPoint = dashCoordinates.endPoint
+                updatePaintColorIfNeeded(dashColorGenerator, index, allDashesToDraw.size)
 
                 canvas.drawLine(startPoint.first, startPoint.second, endPoint.first, endPoint.second, dashPaint)
             }
@@ -153,17 +155,17 @@ class DashedView @JvmOverloads constructor(
     }
 
     // todo write unit tests
-    private fun getLinesOriginatingFromXAxis(
+    private fun getDashesOriginatingFromXAxis(
         dashWidth: Float,
         spaceBetweenDashes: Float,
         dashAngle: Int,
         viewWidth: Float,
         viewHeight: Float
-    ): List<LineCoordinates> {
+    ): List<DashInfo> {
 
-        // Check if horizontal config. If so, no lines drawn from x axis
+        // Check if horizontal config (0 degrees). If so, no dashes drawn from x axis
         val dashDirection = getDashDirection(dashAngle)
-        if (dashDirection.isHorizontal) return emptyList() // If dashes are horizontal (0 or 180 degrees) then no lines will originate from the x axis
+        if (dashDirection.isHorizontal) return emptyList()
 
         // Calculate start points
         val startPoints = mutableListOf<Pair<Float, Float>>()
@@ -189,13 +191,13 @@ class DashedView @JvmOverloads constructor(
                 }
             }
         }
-        startPoints.add(Pair(curXPosition, startYPosition)) // Add one more line to ensure the view is fully covered by lines
+        startPoints.add(Pair(curXPosition, startYPosition)) // Add one more dash to ensure the view is fully covered by dashes
 
         // Calculate translation required to generate end point for a given start point
-        // Apply translation to list of start points to get line coordinates for dashes
+        // Apply translation to list of start points to get list of dash coordinates
         val endPointXTranslation = calculateEndPointXTranslation(dashAngle, viewHeight)
-        val lineCoordinates = startPoints.map {
-            LineCoordinates(
+        val dashCoordinates = startPoints.map {
+            DashInfo(
                 startPoint = it,
                 endPoint =
                     generateEndPoint(
@@ -209,24 +211,24 @@ class DashedView @JvmOverloads constructor(
         }
 
         // Translate start and end points so all 4 corners of dash are drawn outside of the view
-        val elongatedLineCoordinates = elongateDashesOriginatingFromXAxis(
-            initialPositions = lineCoordinates,
+        val elongatedDashCoordinates = elongateDashesOriginatingFromXAxis(
+            initialPositions = dashCoordinates,
             dashAngle = dashAngle,
             dashWidth = dashWidth
         )
 
-        return elongatedLineCoordinates
+        return elongatedDashCoordinates
     }
 
-    private fun getLinesOriginatingFromYAxis(
+    private fun getDashesOriginatingFromYAxis(
         dashWidth: Float,
         spaceBetweenDashes: Float,
         dashAngle: Int,
         viewWidth: Float,
         viewHeight: Float
-    ): List<LineCoordinates> {
+    ): List<DashInfo> {
 
-        // Check if vertical config. If so, no lines should be drawn from the y axis
+        // Check if vertical config (90 degrees). If so, no dashes should be drawn from the y axis
         val dashDirection = getDashDirection(dashAngle)
         if (dashDirection is DashDirection.Vertical) return emptyList()
 
@@ -238,20 +240,20 @@ class DashedView @JvmOverloads constructor(
 
         val dashVerticalOffset = calculateVerticalOffset(dashAngle, dashWidth)
         val spaceVerticalOffset = calculateVerticalOffset(dashAngle, spaceBetweenDashes)
-        if (!dashDirection.isHorizontal) { // If lines will be drawn from the x axis, then skip drawing a line for the first y position which is equalt to the first x position
+        if (!dashDirection.isHorizontal) { // If dashes will be drawn from the x axis, then skip drawing a dash for the first y position because it is equal to the first x position
             curYPosition -= abs(dashVerticalOffset + spaceVerticalOffset)
         }
         while (curYPosition >= VIEW_TOP) {
             startPositions.add(Pair(startXPosition, curYPosition))
             curYPosition -= abs(dashVerticalOffset + spaceVerticalOffset)
         }
-        startPositions.add(Pair(startXPosition, curYPosition)) // Add one more line to ensure the view is fully covered by lines
+        startPositions.add(Pair(startXPosition, curYPosition)) // Add one more dash to ensure the view is fully covered by dashes
 
         // Calculate translation required to generate end point for a given start point
-        // Apply translation to list of start points to get line coordinates for dashes
+        // Apply translation to list of start points to get list of dash coordinates
         val transition = calculateEndPointXTranslation(dashAngle, viewHeight)
-        val lineCoordinates = startPositions.map {
-            LineCoordinates(
+        val dashCoordinates = startPositions.map {
+            DashInfo(
                 startPoint = Pair(
                     it.first,
                     it.second
@@ -260,20 +262,20 @@ class DashedView @JvmOverloads constructor(
                     startPoint = it,
                     dashAngle = dashAngle,
                     endPointXTranslation = transition,
-                    endPointYValue = it.second - viewHeight,// Subtract view height because each of these lines has a different start point Y value
+                    endPointYValue = it.second - viewHeight,// Subtract view height because each of these dashes has a different start point Y value
                     viewWidth = viewWidth
                 )
             )
         }
 
         // Translate start and end points so all 4 corners of dash are drawn outside of the view
-        val elongatedLineCoordinates = elongateDashesOriginatingFromYAxis(
-            initialPositions = lineCoordinates,
+        val elongatedDashCoordinates = elongateDashesOriginatingFromYAxis(
+            initialPositions = dashCoordinates,
             dashAngle = dashAngle,
             dashWidth = dashWidth
         )
 
-        return elongatedLineCoordinates
+        return elongatedDashCoordinates
     }
 
     /**
@@ -281,17 +283,17 @@ class DashedView @JvmOverloads constructor(
      * canvas
      */
     private fun elongateDashesOriginatingFromXAxis(
-        initialPositions: List<LineCoordinates>,
+        initialPositions: List<DashInfo>,
         dashAngle: Int,
         dashWidth: Float
-    ): List<LineCoordinates> {
+    ): List<DashInfo> {
         val hypotenuseRadians = Math.toRadians((abs(90 - dashAngle).toDouble()))
         val translationHypotenuse = (dashWidth * tan((hypotenuseRadians))) / 2 // This is the amount the point must move
         val xTranslation = translationHypotenuse * sin(Math.toRadians((abs(90 - dashAngle).toDouble())))
         val yTranslation = translationHypotenuse * cos(Math.toRadians((abs(90 - dashAngle).toDouble())))
 
         return initialPositions.map {
-            LineCoordinates(
+            DashInfo(
                 Pair(
                     it.startPoint.first + calculateModifiedXTranslation(xTranslation, dashAngle, false),
                     it.startPoint.second + yTranslation.toFloat()
@@ -309,16 +311,16 @@ class DashedView @JvmOverloads constructor(
      * canvas
      */
     private fun elongateDashesOriginatingFromYAxis(
-        initialPositions: List<LineCoordinates>,
+        initialPositions: List<DashInfo>,
         dashAngle: Int,
         dashWidth: Float
-    ): List<LineCoordinates> {
+    ): List<DashInfo> {
         val hypotenuseRadians = Math.toRadians(dashAngle.toDouble())
         val translationHypotenuse = (dashWidth * tan(hypotenuseRadians)) / 2 // This is the amount the point must move
         val xTranslation = abs(translationHypotenuse * cos(hypotenuseRadians)).toFloat()
         val yTranslation = abs(translationHypotenuse * sin(hypotenuseRadians)).toFloat()
 
-        // Depending on the direction of lines the translation value needs to be negative
+        // Depending on the direction of dashes the translation value needs to be negative
         val xTranslationModifier = when (getDashDirection(dashAngle)) {
             is DashDirection.LeftToRight -> -1
             is DashDirection.RightToLeft -> 1
@@ -326,12 +328,12 @@ class DashedView @JvmOverloads constructor(
         }
 
         return initialPositions.map {
-            LineCoordinates(
+            DashInfo(
                 Pair(
                     it.startPoint.first + (xTranslation * xTranslationModifier),
                     it.startPoint.second + yTranslation
                 ),
-                it.endPoint // End point can remain unchanged for lines drawn from Y Axis. Their top corners wont show
+                it.endPoint // End point can remain unchanged for dashes drawn from Y Axis. Their top corners wont show
             )
         }
     }
@@ -359,9 +361,9 @@ class DashedView @JvmOverloads constructor(
     }
 
     /**
-     * Gets the x translation required to sufficiently cover the corners of a line. Essentially this
-     * function give info on how far a line should be extended so it doesn't show it's corners. This
-     * is more important when dashes get thicker and resemble rectangles instead of lines
+     * Gets the x translation required to sufficiently cover the corners of a dash. Essentially this
+     * function give info on how far a dash should be extended so it doesn't show it's corners. This
+     * is more important when dashes get thicker and resemble rectangles instead of dashes/lines
      */
     private fun calculateModifiedXTranslation(
         xTranslation: Double,

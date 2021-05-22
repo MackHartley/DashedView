@@ -12,8 +12,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val misc2 = findViewById<DashedView>(R.id.misc_example_2)
-        misc2.setDashColorGenerator(
+        val misc1 = findViewById<DashedView>(R.id.misc_example_1)
+        misc1.setDashColorGenerator(
             object : DashColorGenerator {
                 override fun getPaintColor(curIndex: Int, numDashes: Int): Int {
                     val alphaValue = 255 * ((curIndex + 1).toFloat() / (numDashes + 1).toFloat())
@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
-        val misc3 = findViewById<DashedView>(R.id.misc_example_3)
-        misc3.setDashColorGenerator(
+        val misc4 = findViewById<DashedView>(R.id.misc_example_4)
+        misc4.setDashColorGenerator(
             object : DashColorGenerator {
                 override fun getPaintColor(curIndex: Int, numDashes: Int): Int {
                     return when {
