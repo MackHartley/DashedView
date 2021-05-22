@@ -13,8 +13,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.tan
 
-// todo check all doc string descriptions
-//todo update attr names
 //todo unit tests
 //todo readme
 
@@ -76,15 +74,15 @@ class DashedView @JvmOverloads constructor(
     init {
         val attrRefs = context.obtainStyledAttributes(attrs, R.styleable.DashedView)
 
-        val requestedWidth = attrRefs.getDimension(R.styleable.DashedView_dashWidth, DEFAULT_WIDTH)
+        val requestedWidth = attrRefs.getDimension(R.styleable.DashedView_dvDashWidth, DEFAULT_WIDTH)
         dashWidth = parseRequestedDashWidth(requestedWidth)
 
-        val requestedAngle = attrRefs.getInteger(R.styleable.DashedView_dashAngle, DEFAULT_DASH_ANGLE)
+        val requestedAngle = attrRefs.getInteger(R.styleable.DashedView_dvDashAngle, DEFAULT_DASH_ANGLE)
         dashAngle = parseRequestedDashAngle(requestedAngle)
 
-        spaceBetweenDashes = attrRefs.getDimension(R.styleable.DashedView_spaceBetweenDashes, DEFAULT_SPACE_BETWEEN_DASHES)
-        dashColor = attrRefs.getColor(R.styleable.DashedView_dashColor, DEFAULT_DASH_COLOR)
-        cornerRadius = attrRefs.getDimension(R.styleable.DashedView_cornerRadius, DEFAULT_CORNER_RADIUS)
+        spaceBetweenDashes = attrRefs.getDimension(R.styleable.DashedView_dvSpaceBetweenDashes, DEFAULT_SPACE_BETWEEN_DASHES)
+        dashColor = attrRefs.getColor(R.styleable.DashedView_dvDashColor, DEFAULT_DASH_COLOR)
+        cornerRadius = attrRefs.getDimension(R.styleable.DashedView_dvViewCornerRadius, DEFAULT_CORNER_RADIUS)
         attrRefs.recycle()
     }
 

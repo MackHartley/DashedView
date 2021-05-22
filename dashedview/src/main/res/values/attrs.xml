@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="DashedView">
-        <attr name="dashWidth" format="dimension" />
-        <attr name="spaceBetweenDashes" format="dimension" />
-        <attr name="dashColor" format="color|reference" />
-        <attr name="dashAngle" format="integer" />
-        <attr name="cornerRadius" format="dimension" />
+        <attr name="dvDashWidth" format="dimension" />
+        <attr name="dvDashAngle" format="integer" />
+        <attr name="dvDashColor" format="color|reference" />
+        <attr name="dvSpaceBetweenDashes" format="dimension" />
+        <attr name="dvViewCornerRadius" format="dimension" />
     </declare-styleable>
 </resources>
