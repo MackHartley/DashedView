@@ -73,7 +73,7 @@ The `DashedView` also has a public method that allows you to set custom coloring
 
 | Public Method | Use |
 |---|---|
-| `setDashColorGenerator(...)` | This method takes a `DashColorGenerator` instance as a parameter which gives you access to the current dash being drawn. Using that you can specify logic for how each dash should be colored. Click here to see an example. |
+| `setDashColorGenerator(...)` | This method takes a `DashColorGenerator` instance as a parameter which gives you access to the index of the current dash being drawn. Using that you can specify logic for how each dash should be colored. Click here to see an example. |
 
 ```
 interface DashColorGenerator {
@@ -81,6 +81,7 @@ interface DashColorGenerator {
 }
 ```
 
+<h1>More Examples 🖼️ </h1>
 
 <p align="center">
   <img width="273" alt="heropic" src="https://user-images.githubusercontent.com/10659285/119214644-07910900-ba8e-11eb-88b8-1afc5afa8421.png">
@@ -91,3 +92,31 @@ interface DashColorGenerator {
   <br>
   <img width="300" alt="Screen Shot 2021-05-23 at 3 47 38 PM" src="https://user-images.githubusercontent.com/10659285/119276077-6a91b580-bbde-11eb-94a8-8848d3e77edd.png">
 </p>
+
+# Contributing 🤝
+Feel free to open issues on this repo to report bugs or request features. Additionally if you'd like to contribute you can create a pull request. Please give me a heads up first though so we don't overwrite each other.
+
+**Special thanks to all those who have supported this repo thus far!**
+<p align="center">
+    <br>
+    <a href="https://github.com/MackHartley/RoundedProgressBar/stargazers"><img src="https://reporoster.com/stars/MackHartley/RoundedProgressBar"/></a>
+    <br>
+    <a href="https://github.com/MackHartley/RoundedProgressBar/network/members"><img src="https://reporoster.com/forks/MackHartley/RoundedProgressBar"/></a>
+</p>
+
+# License 📄
+```
+Copyright 2021 Mack Hartley
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
