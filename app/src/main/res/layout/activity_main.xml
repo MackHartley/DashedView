@@ -259,12 +259,12 @@
 
         <com.mackhartley.dashedview.DashedView
             android:id="@+id/misc_example_3"
-            android:layout_width="200dp"
+            android:layout_width="288dp"
             android:layout_height="100dp"
             android:layout_marginTop="24dp"
             app:dvDashAngle="90"
             app:dvDashColor="#000"
-            app:dvDashWidth="12dp"
+            app:dvDashWidth="16dp"
             app:dvSpaceBetweenDashes="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
