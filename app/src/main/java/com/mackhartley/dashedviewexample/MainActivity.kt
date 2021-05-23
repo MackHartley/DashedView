@@ -24,6 +24,35 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
+        val misc2 = findViewById<DashedView>(R.id.misc_example_2)
+        misc2.setDashColorGenerator(
+            object : DashColorGenerator {
+                override fun getPaintColor(curIndex: Int, numDashes: Int): Int {
+                    val color = ContextCompat.getColor(applicationContext, R.color.design_default_color_secondary)
+
+                    val red = Color.red(color)
+                    val green = Color.green(color)
+                    val blue = Color.blue(color)
+                    val alphaValue = 255 * ((curIndex + 1).toFloat() / (numDashes + 1).toFloat())
+                    val gradientAppliedColor = Color.argb(alphaValue.toInt(), red, green, blue)
+                    return gradientAppliedColor
+                }
+
+            }
+        )
+
+        val misc3 = findViewById<DashedView>(R.id.misc_example_3)
+        misc3.setDashColorGenerator(
+            object : DashColorGenerator {
+                override fun getPaintColor(curIndex: Int, numDashes: Int): Int {
+                    val alphaValue = 255 * ((curIndex + 1).toFloat() / (numDashes + 1).toFloat())
+                    val gradientAppliedColor = Color.argb(alphaValue.toInt(), 0, 0, 0)
+                    return gradientAppliedColor
+                }
+
+            }
+        )
+
         val misc4 = findViewById<DashedView>(R.id.misc_example_4)
         misc4.setDashColorGenerator(
             object : DashColorGenerator {
@@ -36,6 +65,36 @@ class MainActivity : AppCompatActivity() {
                         else -> ContextCompat.getColor(
                             this@MainActivity.applicationContext,
                             R.color.barber2
+                        )
+                    }
+                }
+            }
+        )
+
+        val misc5 = findViewById<DashedView>(R.id.misc_example_5)
+        misc5.setDashColorGenerator(
+            object : DashColorGenerator {
+                override fun getPaintColor(curIndex: Int, numDashes: Int): Int {
+                    return when {
+                        curIndex % 5 == 0 -> ContextCompat.getColor(
+                            this@MainActivity.applicationContext,
+                            R.color.rainbow1
+                        )
+                        curIndex % 5 == 1 -> ContextCompat.getColor(
+                            this@MainActivity.applicationContext,
+                            R.color.rainbow2
+                        )
+                        curIndex % 5 == 2 -> ContextCompat.getColor(
+                            this@MainActivity.applicationContext,
+                            R.color.rainbow3
+                        )
+                        curIndex % 5 == 3 -> ContextCompat.getColor(
+                            this@MainActivity.applicationContext,
+                            R.color.rainbow4
+                        )
+                        else -> ContextCompat.getColor(
+                            this@MainActivity.applicationContext,
+                            R.color.rainbow5
                         )
                     }
                 }

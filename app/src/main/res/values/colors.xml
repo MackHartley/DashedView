@@ -12,4 +12,10 @@
     <color name="barber2">#f00</color>
     <color name="goal_color">#777</color>
     <color name="card_color">#5aa</color>
+
+    <color name="rainbow1">#ff595e</color>
+    <color name="rainbow2">#ffca3a</color>
+    <color name="rainbow3">#8ac926</color>
+    <color name="rainbow4">#1982c4</color>
+    <color name="rainbow5">#6a4c93</color>
 </resources>
