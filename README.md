@@ -11,10 +11,9 @@
     <a href="https://jitpack.io/#MackHartley/RoundedProgressBar"><img src="https://jitpack.io/v/MackHartley/RoundedProgressBar.svg" height="20"/></a>
     <a href="https://github.com/MackHartley/DashedView/actions/workflows/buildAndTest.yml"><img src="https://github.com/MackHartley/DashedView/actions/workflows/buildAndTest.yml/badge.svg" /></a>
     <a href="https://ktlint.github.io/"><img src="https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg" alt="ktlint"></a>
-    <a href="https://github.com/MackHartley/RoundedProgressBar/commits/master"><img src="https://img.shields.io/badge/Maintained%3F-yes-brightgreen.svg" height="20"/></a>
 </p>
 
-The `DashedView` library allows you to create views with a dashed (or striped) background. Below are some of the views you can create using this library.
+The `DashedView` library allows you to create views with a dashed (or striped) background. Below are some examples of views created with this library. Click on any example to see its code.
 
 <p align="center">
   <img width="204" alt="Screen Shot 2021-05-21 at 11 42 53 PM" src="https://user-images.githubusercontent.com/10659285/119214704-550d7600-ba8e-11eb-9a88-b26f75d971c4.png">
@@ -56,6 +55,33 @@ Once that's finished you can declare a `DashedView` via XML:
     app:dvSpaceBetweenDashes="4dp"
     app:dvViewCornerRadius="0dp" />
 ```
+<h1>Usage ⚙️</h1>
+
+The table below explains the 5 XML attributes you can set on the `DashedView` class:
+<br>
+
+| Xml Attribute | Use |
+|---|---|
+| `dvDashAngle` | Sets the angle of the dashes. The angle is measured from the X axis of the view. |
+| `dvDashColor` | Sets the color of the dashes. |
+| `dvDashWidth` | Sets the width of the dashes. |
+| `dvSpaceBetweenDashes` | Sets the width of the space between each dash. |
+| `dvViewCornerRadius` | Sets the corner radius value for the `DashedView`. Useful when working with other views that have rounded corners. |
+
+The `DashedView` also has a public method that allows you to set custom coloring for individual dashes:
+<br>
+
+| Public Method | Use |
+|---|---|
+| `setDashColorGenerator(...)` | This method takes a `DashColorGenerator` instance as a parameter which gives you access to the current dash being drawn. Using that you can specify logic for how each dash should be colored. Click here to see an example. |
+
+```
+interface DashColorGenerator {
+    @ColorInt fun getPaintColor(curIndex: Int, numDashes: Int): Int
+}
+```
+
+
 <p align="center">
   <img width="273" alt="heropic" src="https://user-images.githubusercontent.com/10659285/119214644-07910900-ba8e-11eb-88b8-1afc5afa8421.png">
   <img width="273" alt="hero2" src="https://user-images.githubusercontent.com/10659285/119214622-e0d2d280-ba8d-11eb-9ff7-5ac4e23d8d23.png">
