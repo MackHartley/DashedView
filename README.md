@@ -23,6 +23,40 @@ The `DashedView` library allows you to create views with a dashed (or striped) b
   <img width="367" alt="card1" src="https://user-images.githubusercontent.com/10659285/119276770-8b0f3f00-bbe1-11eb-9519-0f5eef08b9ec.png">
   <img width="367" alt="card2" src="https://user-images.githubusercontent.com/10659285/119276772-8ea2c600-bbe1-11eb-990b-671e321bb391.png">
   <br>
+</p>
+
+<h1>Quick Start Guide <a href="https://jitpack.io/#MackHartley/RoundedProgressBar">&#9;<img src="https://jitpack.io/v/MackHartley/RoundedProgressBar.svg" height="20"/></a></h1>
+
+If you don't have this already, add it to your **root** build.gradle file:
+```
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+Then you can add the dependency to your **app** build.gradle file:
+```
+dependencies {
+    ...
+    implementation 'com.github.MackHartley:RoundedProgressBar:2.1.0'
+}
+```
+
+Once that's finished you can declare a `DashedView` via XML:
+```
+<com.mackhartley.dashedview.DashedView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:dvDashAngle="45"
+    app:dvDashColor="#777"
+    app:dvDashWidth="4dp"
+    app:dvSpaceBetweenDashes="4dp"
+    app:dvViewCornerRadius="0dp" />
+```
+<p align="center">
   <img width="273" alt="heropic" src="https://user-images.githubusercontent.com/10659285/119214644-07910900-ba8e-11eb-88b8-1afc5afa8421.png">
   <img width="273" alt="hero2" src="https://user-images.githubusercontent.com/10659285/119214622-e0d2d280-ba8d-11eb-9ff7-5ac4e23d8d23.png">
   <br>
@@ -30,11 +64,4 @@ The `DashedView` library allows you to create views with a dashed (or striped) b
   <img width="300" alt="Screen Shot 2021-05-23 at 3 48 04 PM" src="https://user-images.githubusercontent.com/10659285/119276083-6cf40f80-bbde-11eb-8337-9433408fdc14.png">
   <br>
   <img width="300" alt="Screen Shot 2021-05-23 at 3 47 38 PM" src="https://user-images.githubusercontent.com/10659285/119276077-6a91b580-bbde-11eb-94a8-8848d3e77edd.png">
-  
-  
-
-
-
-  
-  
 </p>
