@@ -1,10 +1,10 @@
 package com.mackhartley.dashedview
 
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
-import org.junit.Assert.*
-
-class DashedViewHelpersTest {
+class DashedViewTests {
 
     companion object {
         const val DELTA = 0.0001f

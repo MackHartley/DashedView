@@ -20,7 +20,6 @@ class MainActivity : AppCompatActivity() {
                     val gradientAppliedColor = Color.argb(alphaValue.toInt(), 255, 0, 255)
                     return gradientAppliedColor
                 }
-
             }
         )
 
@@ -37,7 +36,6 @@ class MainActivity : AppCompatActivity() {
                     val gradientAppliedColor = Color.argb(alphaValue.toInt(), red, green, blue)
                     return gradientAppliedColor
                 }
-
             }
         )
 
@@ -49,7 +47,6 @@ class MainActivity : AppCompatActivity() {
                     val gradientAppliedColor = Color.argb(alphaValue.toInt(), 0, 0, 0)
                     return gradientAppliedColor
                 }
-
             }
         )
 
