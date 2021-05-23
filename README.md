@@ -25,5 +25,11 @@ The `DashedView` library allows you to create views with a dashed (or striped) b
   <img width="319" alt="hero2" src="https://user-images.githubusercontent.com/10659285/119214622-e0d2d280-ba8d-11eb-9ff7-5ac4e23d8d23.png">
   <br>
   <img width="320" alt="Screen Shot 2021-05-21 at 11 44 19 PM" src="https://user-images.githubusercontent.com/10659285/119214724-85edab00-ba8e-11eb-8c01-f6da75fda938.png">
+<br>
+<img width="396" alt="Screen Shot 2021-05-23 at 3 28 28 PM" src="https://user-images.githubusercontent.com/10659285/119275739-4e8d1480-bbdc-11eb-8f84-e80af2ea9aeb.png">
+<img width="396" alt="Screen Shot 2021-05-23 at 3 32 10 PM" src="https://user-images.githubusercontent.com/10659285/119275743-50ef6e80-bbdc-11eb-9bef-c782cc29a6b2.png">
 
+
+  
+  
 </p>
