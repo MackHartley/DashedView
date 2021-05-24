@@ -12,6 +12,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Gives an example of a gradient
         val misc1 = findViewById<DashedView>(R.id.misc_example_1)
         misc1.setDashColorGenerator(
             object : DashColorGenerator {
@@ -23,6 +24,7 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
+        // Gives an example of a gradient
         val misc2 = findViewById<DashedView>(R.id.misc_example_2)
         misc2.setDashColorGenerator(
             object : DashColorGenerator {
@@ -39,6 +41,7 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
+        // Gives an example of a gradient
         val misc3 = findViewById<DashedView>(R.id.misc_example_3)
         misc3.setDashColorGenerator(
             object : DashColorGenerator {
@@ -50,6 +53,7 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
+        // Gives an example of an alternating color pallet
         val misc4 = findViewById<DashedView>(R.id.misc_example_4)
         misc4.setDashColorGenerator(
             object : DashColorGenerator {
@@ -68,6 +72,7 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
+        // Gives an example of an alternating color pallet
         val misc5 = findViewById<DashedView>(R.id.misc_example_5)
         misc5.setDashColorGenerator(
             object : DashColorGenerator {
