@@ -253,8 +253,9 @@ class DashedView @JvmOverloads constructor(
                 endPoint = generateEndPoint(
                     startPoint = it,
                     dashAngle = dashAngle,
+
                     endPointXTranslation = transition,
-                    endPointYValue = it.second - viewHeight, // Subtract view height because each of these dashes has a different start point Y value
+                    endPointYValue = it.second - viewHeight,// Subtract view height because each of these dashes has a different start point Y value
                     viewWidth = viewWidth
                 )
             )
