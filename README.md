@@ -84,17 +84,16 @@ To see an example of the `DashColorGenerator` click <a href="https://github.com/
 <h1>More Examples 🖼️ </h1>
 
 <p align="center">
-  <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L230-L242"><img width="273" alt="heropic" src="https://user-images.githubusercontent.com/10659285/119214644-07910900-ba8e-11eb-88b8-1afc5afa8421.png"></a>
-  <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L244-L255"><img width="273" alt="hero2" src="https://user-images.githubusercontent.com/10659285/119214622-e0d2d280-ba8d-11eb-9ff7-5ac4e23d8d23.png"></a>
-  <br>
-  <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L270-L281"><img width="180" alt="Screen Shot 2021-05-21 at 11 44 19 PM" src="https://user-images.githubusercontent.com/10659285/119214724-85edab00-ba8e-11eb-8c01-f6da75fda938.png"></a>
-  <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L283-L294"><img width="300" alt="Screen Shot 2021-05-23 at 3 48 04 PM" src="https://user-images.githubusercontent.com/10659285/119276083-6cf40f80-bbde-11eb-8337-9433408fdc14.png"></a>
+  <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L230-L242"><img height="200" alt="heropic" src="https://user-images.githubusercontent.com/10659285/119214644-07910900-ba8e-11eb-88b8-1afc5afa8421.png"></a>
+  <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L244-L255"><img height="200" alt="hero2" src="https://user-images.githubusercontent.com/10659285/119214622-e0d2d280-ba8d-11eb-9ff7-5ac4e23d8d23.png"></a>
+  <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L270-L281"><img height="200" alt="Screen Shot 2021-05-21 at 11 44 19 PM" src="https://user-images.githubusercontent.com/10659285/119214724-85edab00-ba8e-11eb-8c01-f6da75fda938.png"></a>
+  <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L283-L294"><img height="200" alt="Screen Shot 2021-05-23 at 3 48 04 PM" src="https://user-images.githubusercontent.com/10659285/119276083-6cf40f80-bbde-11eb-8337-9433408fdc14.png"></a>
   <br>
   <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L257-L268"><img width="300" alt="Screen Shot 2021-05-23 at 3 47 38 PM" src="https://user-images.githubusercontent.com/10659285/119276077-6a91b580-bbde-11eb-94a8-8848d3e77edd.png"></a>
 </p>
 
 # Contributing 🤝
-Feel free to open issues on this repo to report bugs or request features. Additionally if you'd like to contribute you can create a pull request. Please give me a heads up first though so we don't overwrite each other.
+Feel free to open issues on this repo to report bugs or request features. Additionally if you'd like to contribute you can create a pull request (make sure to read <a href="https://github.com/MackHartley/DashedView/blob/master/CONTRIBUTING.md">contributing.mk</a>).
 
 **Special thanks to all those who have supported this repo thus far!**
 <p align="center">
