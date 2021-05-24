@@ -6,7 +6,7 @@
 
 <p align="center">
     <a href="https://android-arsenal.com/api?level=21"><img src="https://img.shields.io/badge/API-21%2B-blue.svg?style=flat" height="20"/></a>
-    <a href="https://jitpack.io/#MackHartley/RoundedProgressBar"><img src="https://jitpack.io/v/MackHartley/RoundedProgressBar.svg" height="20"/></a>
+    <a href="https://jitpack.io/#MackHartley/DashedView"><img src="https://jitpack.io/v/MackHartley/DashedView.svg" height="20"/></a>
     <a href="https://github.com/MackHartley/DashedView/actions/workflows/buildAndTest.yml"><img src="https://github.com/MackHartley/DashedView/actions/workflows/buildAndTest.yml/badge.svg" /></a>
     <a href="https://ktlint.github.io/"><img src="https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg" alt="ktlint"></a>
 </p>
@@ -22,7 +22,7 @@ The `DashedView` library allows you to create views with a dashed (or striped) b
   <br>
 </p>
 
-<h1>Quick Start Guide <a href="https://jitpack.io/#MackHartley/RoundedProgressBar">&#9;<img src="https://jitpack.io/v/MackHartley/RoundedProgressBar.svg" height="20"/></a></h1>
+<h1>Quick Start Guide <a href="https://jitpack.io/#MackHartley/DashedView"><img src="https://jitpack.io/v/MackHartley/DashedView.svg" height="20"/></a></h1>
 
 If you don't have this already, add it to your **root** build.gradle file:
 ```
@@ -98,9 +98,9 @@ Feel free to open issues on this repo to report bugs or request features. Additi
 **Special thanks to all those who have supported this repo thus far!**
 <p align="center">
     <br>
-    <a href="https://github.com/MackHartley/RoundedProgressBar/stargazers"><img src="https://reporoster.com/stars/MackHartley/RoundedProgressBar"/></a>
+    <a href="https://github.com/MackHartley/DashedView/stargazers"><img src="https://reporoster.com/stars/MackHartley/DashedView"/></a>
     <br>
-    <a href="https://github.com/MackHartley/RoundedProgressBar/network/members"><img src="https://reporoster.com/forks/MackHartley/RoundedProgressBar"/></a>
+    <a href="https://github.com/MackHartley/DashedView/network/members"><img src="https://reporoster.com/forks/MackHartley/DashedView"/></a>
 </p>
 
 # License 📄
