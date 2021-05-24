@@ -78,7 +78,7 @@ interface DashColorGenerator {
     @ColorInt fun getPaintColor(curIndex: Int, numDashes: Int): Int
 }
 ```
-To see an example of the `DashColorGenerator` click <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/java/com/mackhartley/dashedviewexample/MainActivity.kt#L16-L25">here</a>.
+To see an example of the `DashColorGenerator` click <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/java/com/mackhartley/dashedviewexample/MainActivity.kt#L18-L24">here</a>.
 
 <h1>More Examples 🖼️ </h1>
 
