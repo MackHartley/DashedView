@@ -58,7 +58,7 @@ Once that's finished you can declare a `DashedView` via XML:
 The table below explains the 5 XML attributes you can set on the `DashedView` class:
 <br>
 
-| Xml Attribute | Use |
+| XML Attribute | Use |
 |---|---|
 | `dvDashAngle` | Sets the angle of the dashes. The angle is measured from the X axis of the view. |
 | `dvDashColor` | Sets the color of the dashes. |
