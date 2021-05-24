@@ -38,7 +38,7 @@ Then you can add the dependency to your **app** build.gradle file:
 ```
 dependencies {
     ...
-    implementation 'com.github.MackHartley:RoundedProgressBar:2.1.0'
+    implementation 'com.github.MackHartley:DashedView:1.0.0'
 }
 ```
 
@@ -53,6 +53,7 @@ Once that's finished you can declare a `DashedView` via XML:
     app:dvSpaceBetweenDashes="4dp"
     app:dvViewCornerRadius="0dp" />
 ```
+
 <h1>Usage ⚙️</h1>
 
 The table below explains the 5 XML attributes you can set on the `DashedView` class:
@@ -71,7 +72,7 @@ The `DashedView` also has a public method that allows you to set custom coloring
 
 | Public Method | Use |
 |---|---|
-| `setDashColorGenerator(...)` | This method takes a `DashColorGenerator` instance as a parameter which gives you access to the index of the current dash being drawn. Using that you can specify logic for how each dash should be colored. |
+| `setDashColorGenerator(...)` | This method takes a `DashColorGenerator` instance as a parameter which gives you access to the index of the current dash being drawn. Using that information you can specify logic for how each dash should be colored. |
 
 ```
 interface DashColorGenerator {
