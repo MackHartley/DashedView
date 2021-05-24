@@ -243,8 +243,8 @@
 
         <com.mackhartley.dashedview.DashedView
             android:id="@+id/misc_example_2"
-            android:layout_width="318dp"
-            android:layout_height="318dp"
+            android:layout_width="268dp"
+            android:layout_height="268dp"
             android:layout_marginTop="24dp"
             app:dvDashAngle="135"
             app:dvDashColor="@color/design_default_color_secondary"
