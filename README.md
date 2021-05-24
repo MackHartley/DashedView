@@ -11,7 +11,7 @@
     <a href="https://ktlint.github.io/"><img src="https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg" alt="ktlint"></a>
 </p>
 
-The `DashedView` library allows you to create views with a dashed (or striped) background. Below are some examples of views created with this library. Click on any example to see its code.
+The `DashedView` library allows you to create views with a dashed (or striped) background. Below are some examples of views created with this library. You can click on any example to see its code.
 
 <p align="center">
   <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L81-L118"><img width="204" alt="Screen Shot 2021-05-21 at 11 42 53 PM" src="https://user-images.githubusercontent.com/10659285/119214704-550d7600-ba8e-11eb-9a88-b26f75d971c4.png"></a>
@@ -71,13 +71,14 @@ The `DashedView` also has a public method that allows you to set custom coloring
 
 | Public Method | Use |
 |---|---|
-| `setDashColorGenerator(...)` | This method takes a `DashColorGenerator` instance as a parameter which gives you access to the index of the current dash being drawn. Using that you can specify logic for how each dash should be colored. Click here to see an example. |
+| `setDashColorGenerator(...)` | This method takes a `DashColorGenerator` instance as a parameter which gives you access to the index of the current dash being drawn. Using that you can specify logic for how each dash should be colored. |
 
 ```
 interface DashColorGenerator {
     @ColorInt fun getPaintColor(curIndex: Int, numDashes: Int): Int
 }
 ```
+To see an example of the `DashColorGenerator` click <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/java/com/mackhartley/dashedviewexample/MainActivity.kt#L16-L25">here</a>.
 
 <h1>More Examples 🖼️ </h1>
 
