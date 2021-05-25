@@ -22,6 +22,12 @@ The `DashedView` library allows you to create views with a dashed (or striped) b
   <br>
 </p>
 
+There is also a demo app for this library which allows you to see the look and feel of the `DashedView` on your own device:
+
+<p align="center">
+  <a href='https://play.google.com/store/apps/details?id=com.mackhartley.dashedviewexample&pcampaignid=pcampaignidMKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1'><img height="100" alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png'/></a>
+</p>
+  
 <h1>Quick Start Guide <a href="https://jitpack.io/#MackHartley/DashedView"><img src="https://jitpack.io/v/MackHartley/DashedView.svg" height="20"/></a></h1>
 
 If you don't have this already, add it to your **root** build.gradle file:
