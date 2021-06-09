@@ -72,6 +72,7 @@ The table below explains the 5 XML attributes you can set on the `DashedView` cl
 | `dvDashWidth` | Sets the width of the dashes. |
 | `dvSpaceBetweenDashes` | Sets the width of the space between each dash. |
 | `dvViewCornerRadius` | Sets the corner radius value for the `DashedView`. Useful when working with other views that have rounded corners. |
+<br>
 
 The `DashedView` also has a public method that allows you to set custom coloring for individual dashes:
 <br>
