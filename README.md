@@ -91,6 +91,9 @@ To see an example of the `DashColorGenerator` click <a href="https://github.com/
 <h1>More Examples 🖼️ </h1>
 
 <p align="center">
+  Click on any example to see it's code (You also need to look at <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/java/com/mackhartley/dashedviewexample/MainActivity.kt#L15-L104">MainActivity</a> which sets custom dash coloring)
+  <br>
+  <br>
   <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L230-L242"><img height="200" alt="heropic" src="https://user-images.githubusercontent.com/10659285/119214644-07910900-ba8e-11eb-88b8-1afc5afa8421.png"></a>
   <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L244-L255"><img height="200" alt="hero2" src="https://user-images.githubusercontent.com/10659285/119214622-e0d2d280-ba8d-11eb-9ff7-5ac4e23d8d23.png"></a>
   <a href="https://github.com/MackHartley/DashedView/blob/master/app/src/main/res/layout/activity_main.xml#L270-L281"><img height="200" alt="Screen Shot 2021-05-21 at 11 44 19 PM" src="https://user-images.githubusercontent.com/10659285/119214724-85edab00-ba8e-11eb-8c01-f6da75fda938.png"></a>
