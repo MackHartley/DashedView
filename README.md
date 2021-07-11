@@ -9,6 +9,7 @@
     <a href="https://jitpack.io/#MackHartley/DashedView"><img src="https://jitpack.io/v/MackHartley/DashedView.svg" height="20"/></a>
     <a href="https://github.com/MackHartley/DashedView/actions/workflows/buildAndTest.yml"><img src="https://github.com/MackHartley/DashedView/actions/workflows/buildAndTest.yml/badge.svg" /></a>
     <a href="https://ktlint.github.io/"><img src="https://img.shields.io/badge/code%20style-%E2%9D%A4-FF4081.svg" alt="ktlint"></a>
+    <a href="https://androidweekly.net/issues/issue-474"><img alt="Featured in Android Weekly" src="https://img.shields.io/badge/Featured%20in%20Android%20Weekly-%23474-orange"/></a>
 </p>
 
 The `DashedView` library allows you to create views with a dashed (or striped) background. Below are some examples of views created with this library. You can click on any example to see its code.
