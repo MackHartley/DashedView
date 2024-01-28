@@ -109,9 +109,9 @@ Feel free to open issues on this repo to report bugs or request features. Additi
 **Special thanks to all those who have supported this repo thus far!**
 <p align="center">
     <br>
-    <a href="https://github.com/MackHartley/DashedView/stargazers"><img src="https://reporoster.com/stars/MackHartley/DashedView"/></a>
+    <a href="https://github.com/MackHartley/DashedView/stargazers"><img src="http://reporoster.com/stars/MackHartley/DashedView"/></a>
     <br>
-    <a href="https://github.com/MackHartley/DashedView/network/members"><img src="https://reporoster.com/forks/MackHartley/DashedView"/></a>
+    <a href="https://github.com/MackHartley/DashedView/network/members"><img src="http://reporoster.com/forks/MackHartley/DashedView"/></a>
 </p>
 
 # License 📄
